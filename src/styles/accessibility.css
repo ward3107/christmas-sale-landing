@@ -1,0 +1,341 @@
+/* =============================================================================
+   ACCESSIBILITY CSS
+   =============================================================================
+   WCAG 2.1 AA compliance utilities and accessibility enhancements.
+   ============================================================================= */
+
+/* ==========================================
+   SCREEN READER ONLY UTILITY
+   ========================================== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* ==========================================
+   FOCUS INDICATORS (WCAG 2.4.7)
+   ========================================== */
+*:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Enhanced focus for keyboard navigation mode */
+.keyboard-nav *:focus,
+.keyboard-nav *:focus-visible {
+  outline: 3px solid #2563eb !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.2);
+}
+
+/* ==========================================
+   HIGH CONTRAST MODE
+   ========================================== */
+.high-contrast {
+  filter: contrast(1.25);
+}
+
+.high-contrast img,
+.high-contrast video {
+  filter: contrast(1);
+}
+
+/* Respect system preference */
+@media (prefers-contrast: more) {
+  :root {
+    --contrast-multiplier: 1.25;
+  }
+
+  body {
+    filter: contrast(var(--contrast-multiplier, 1));
+  }
+}
+
+/* ==========================================
+   REDUCED MOTION
+   ========================================== */
+.reduce-motion,
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Respect system preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================
+   LINE HEIGHT OPTIONS
+   ========================================== */
+.line-height-normal {
+  --line-height: 1.5;
+}
+
+.line-height-relaxed {
+  --line-height: 1.75;
+}
+
+.line-height-relaxed p,
+.line-height-relaxed li,
+.line-height-relaxed span {
+  line-height: 1.75 !important;
+}
+
+.line-height-loose {
+  --line-height: 2;
+}
+
+.line-height-loose p,
+.line-height-loose li,
+.line-height-loose span {
+  line-height: 2 !important;
+}
+
+/* ==========================================
+   TOUCH TARGETS (WCAG 2.5.5 - AAA, 2.5.8 - AA)
+   ========================================== */
+button,
+[role="button"],
+input[type="checkbox"],
+input[type="radio"],
+select,
+[tabindex]:not([tabindex="-1"]) {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Ensure adequate spacing for inline links */
+a {
+  padding: 0.25em 0;
+}
+
+/* ==========================================
+   TEXT SPACING (WCAG 1.4.12)
+   ========================================== */
+.text-spacing-relaxed {
+  line-height: 1.5 !important;
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+}
+
+.text-spacing-loose {
+  line-height: 2 !important;
+  letter-spacing: 0.16em !important;
+  word-spacing: 0.24em !important;
+}
+
+/* ==========================================
+   SKIP LINK
+   ========================================== */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 1rem 2rem;
+  background: #1e293b;
+  color: #ffffff;
+  z-index: 9999;
+  text-decoration: none;
+  border-radius: 0 0 0.5rem 0.5rem;
+  font-weight: 600;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* ==========================================
+   DARK MODE SUPPORT
+   ========================================== */
+.dark {
+  color-scheme: dark;
+}
+
+.dark body {
+  background-color: #0f172a;
+  color: #e2e8f0;
+}
+
+/* ==========================================
+   CUSTOM SCROLLBAR FOR ACCESSIBILITY
+   ========================================== */
+.keyboard-nav ::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.keyboard-nav ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 6px;
+}
+
+.keyboard-nav ::-webkit-scrollbar-thumb {
+  background: #94a3b8;
+  border-radius: 6px;
+  border: 2px solid #f1f5f9;
+}
+
+.keyboard-nav ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* ==========================================
+   PRINT STYLES
+   ========================================== */
+@media print {
+  .accessibility-widget,
+  .cookie-consent,
+  .skip-link,
+  .whatsapp-button {
+    display: none !important;
+  }
+
+  /* Ensure good print contrast */
+  body {
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+}
+
+/* ==========================================
+   SELECTION STYLES
+   ========================================== */
+::selection {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.dark ::selection {
+  background-color: #3b82f6;
+  color: #ffffff;
+}
+
+/* ==========================================
+   FORM ACCESSIBILITY ENHANCEMENTS
+   ========================================== */
+input:invalid:not(:placeholder-shown),
+textarea:invalid:not(:placeholder-shown) {
+  border-color: #dc2626;
+}
+
+input:valid:not(:placeholder-shown),
+textarea:valid:not(:placeholder-shown) {
+  border-color: #16a34a;
+}
+
+/* Required field indicator */
+label[data-required]::after {
+  content: " *";
+  color: #dc2626;
+}
+
+/* ==========================================
+   LOADING STATES
+   ========================================== */
+[aria-busy="true"] {
+  cursor: wait;
+}
+
+/* ==========================================
+   DISABLED STATES
+   ========================================== */
+[disabled],
+[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ==========================================
+   ERROR STATES
+   ========================================== */
+[aria-invalid="true"] {
+  border-color: #dc2626 !important;
+}
+
+.error-message {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* ==========================================
+   LIVE REGIONS
+   ========================================== */
+[aria-live] {
+  /* Ensure live regions are styled but not visually intrusive */
+}
+
+[aria-live="assertive"] {
+  /* Important announcements */
+}
+
+[aria-live="polite"] {
+  /* Status updates */
+}
+
+/* ==========================================
+   RTL SUPPORT ENHANCEMENTS
+   ========================================== */
+[dir="rtl"] .skip-link {
+  right: 50%;
+  left: auto;
+  transform: translateX(50%);
+}
+
+[dir="rtl"] .keyboard-nav *:focus {
+  outline-offset: 3px;
+}
