@@ -12,6 +12,7 @@ import { Features } from "@/components/sections/Features";
 import { Services } from "@/components/sections/Services";
 import { About } from "@/components/sections/About";
 import { Testimonials } from "@/components/sections/Testimonials";
+import { FAQ } from "@/components/sections/FAQ";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
@@ -38,6 +39,9 @@ export default function HomePage() {
 
         {/* Testimonials Section - Customer reviews */}
         <Testimonials />
+
+        {/* FAQ Section - Common questions */}
+        <FAQ />
 
         {/* Contact Section - Lead capture form */}
         <ContactForm />

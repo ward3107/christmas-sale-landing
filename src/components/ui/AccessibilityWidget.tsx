@@ -12,6 +12,7 @@ import { Icon } from "./Icon";
 
 // Storage key for accessibility settings
 const STORAGE_KEY = "cohen-law-accessibility-settings";
+const HIDDEN_KEY = "cohen-law-accessibility-hidden";
 
 // Default accessibility settings
 const DEFAULT_SETTINGS = {
@@ -27,6 +28,7 @@ type AccessibilitySettings = typeof DEFAULT_SETTINGS;
 
 export function AccessibilityWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
   const [settings, setSettings] = useState<AccessibilitySettings>(DEFAULT_SETTINGS);
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -43,6 +45,12 @@ export function AccessibilityWidget() {
       } catch (e) {
         console.warn("Failed to parse accessibility settings:", e);
       }
+    }
+
+    // Check if widget was hidden
+    const hidden = localStorage.getItem(HIDDEN_KEY);
+    if (hidden === "true") {
+      setIsHidden(true);
     }
 
     // Check for system preferences
@@ -95,6 +103,13 @@ export function AccessibilityWidget() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_SETTINGS));
     announceToScreenReader("הגדרות הנגישות אופסו");
   }, [applySettings]);
+
+  // Hide widget
+  const hideWidget = useCallback(() => {
+    setIsHidden(true);
+    setIsOpen(false);
+    localStorage.setItem(HIDDEN_KEY, "true");
+  }, []);
 
   // Announce to screen readers
   const announceToScreenReader = (message: string) => {
@@ -176,34 +191,48 @@ export function AccessibilityWidget() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
+  if (isHidden) {
+    return null;
+  }
+
   return (
     <>
       {/* Floating Button */}
-      <button
-        ref={buttonRef}
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-24 left-4 z-50 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center group"
-        aria-label="הגדרות נגישות"
-        aria-expanded={isOpen}
-        aria-controls="accessibility-panel"
-      >
-        <svg
-          className="w-7 h-7"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
+      <div className="fixed bottom-24 left-4 z-50 group">
+        <button
+          ref={buttonRef}
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center"
+          aria-label="הגדרות נגישות"
+          aria-expanded={isOpen}
+          aria-controls="accessibility-panel"
         >
-          <circle cx="12" cy="12" r="10" strokeWidth="2" />
-          <circle cx="12" cy="8" r="2" fill="currentColor" />
-          <path
-            strokeWidth="2"
-            strokeLinecap="round"
-            d="M12 10v4M9 18l3-4 3 4M7 14h10"
-          />
-        </svg>
-        <span className="sr-only">פתח הגדרות נגישות</span>
-      </button>
+          <svg
+            className="w-7 h-7"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="10" strokeWidth="2" />
+            <circle cx="12" cy="8" r="2" fill="currentColor" />
+            <path
+              strokeWidth="2"
+              strokeLinecap="round"
+              d="M12 10v4M9 18l3-4 3 4M7 14h10"
+            />
+          </svg>
+          <span className="sr-only">פתח הגדרות נגישות</span>
+        </button>
+        {/* Close/Hide Button */}
+        <button
+          onClick={hideWidget}
+          className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-md flex items-center justify-center"
+          aria-label="הסתר כפתור נגישות"
+        >
+          <Icon name="X" className="w-2 h-2" strokeWidth={3} />
+        </button>
+      </div>
 
       {/* Settings Panel */}
       {isOpen && (
