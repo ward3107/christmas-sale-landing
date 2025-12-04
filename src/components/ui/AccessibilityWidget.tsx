@@ -227,10 +227,11 @@ export function AccessibilityWidget() {
         {/* Close/Hide Button */}
         <button
           onClick={hideWidget}
-          className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-red-500 hover:bg-red-600 text-white rounded-full shadow-md flex items-center justify-center"
+          style={{ width: '20px', height: '20px', minWidth: '20px', minHeight: '20px', padding: 0 }}
+          className="absolute -top-1.5 -right-1.5 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-sm"
           aria-label="הסתר כפתור נגישות"
         >
-          <Icon name="X" className="w-2 h-2" strokeWidth={3} />
+          <span className="text-[14px] font-bold leading-none">×</span>
         </button>
       </div>
 

@@ -86,8 +86,34 @@ export function useLeadForm(): UseLeadFormReturn {
         status: "new", // For lead management
       };
 
-      // Add document to Firestore
-      await addDoc(collection(db, COLLECTION_NAME), leadDocument);
+      // Try to add document to Firestore (non-blocking - don't fail if Firebase fails)
+      try {
+        await addDoc(collection(db, COLLECTION_NAME), leadDocument);
+      } catch (firebaseError) {
+        console.warn("Firebase save failed (continuing with email):", firebaseError);
+      }
+
+      // Send email via Formspree (simple, no setup needed)
+      const formspreeEndpoint = process.env.NEXT_PUBLIC_FORMSPREE_ID;
+      if (formspreeEndpoint) {
+        const emailResponse = await fetch(`https://formspree.io/f/${formspreeEndpoint}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({
+            name: data.name.trim(),
+            email: data.email.trim(),
+            phone: data.phone.trim(),
+            message: data.message?.trim() || "לא צוינה הודעה",
+          }),
+        });
+
+        if (!emailResponse.ok) {
+          throw new Error("שליחת האימייל נכשלה. נא לנסות שוב.");
+        }
+      }
 
       // Success state
       setState({

@@ -11,6 +11,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "firebase": "^10.7.1",
     "lucide-react": "^0.294.0",
     "next": "14.0.4",
