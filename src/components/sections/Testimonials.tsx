@@ -119,6 +119,19 @@ export function Testimonials() {
             </div>
           ))}
         </div>
+
+        {/* Legal Disclaimer */}
+        <div
+          className={`mt-12 text-center transition-all duration-700 delay-300 ${
+            isVisible ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <p className="text-sm text-slate-500 max-w-3xl mx-auto">
+            * המלצות אלו הן דוגמאות להמלצות מלקוחות. השמות והפרטים שונו לשם הגנת פרטיות הלקוחות.
+            <br />
+            התוצאות עשויות להשתנות בהתאם לנסיבות הספציפיות של כל מקרה.
+          </p>
+        </div>
       </div>
     </section>
   );

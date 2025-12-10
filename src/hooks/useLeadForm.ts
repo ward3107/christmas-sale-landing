@@ -87,10 +87,13 @@ export function useLeadForm(): UseLeadFormReturn {
       };
 
       // Try to add document to Firestore (non-blocking - don't fail if Firebase fails)
-      try {
-        await addDoc(collection(db, COLLECTION_NAME), leadDocument);
-      } catch (firebaseError) {
-        console.warn("Firebase save failed (continuing with email):", firebaseError);
+      // Skip Firebase if not configured
+      if (process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
+        try {
+          await addDoc(collection(db, COLLECTION_NAME), leadDocument);
+        } catch (firebaseError) {
+          console.warn("Firebase save failed (continuing with email):", firebaseError);
+        }
       }
 
       // Send email via Formspree (simple, no setup needed)

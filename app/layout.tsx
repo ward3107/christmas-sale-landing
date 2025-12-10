@@ -29,7 +29,13 @@ export const metadata: Metadata = {
   title: siteConfig.metadata.title,
   description: siteConfig.metadata.description,
   keywords: siteConfig.metadata.keywords,
-  authors: [{ name: "Cohen Law Office" }],
+  authors: [{ name: "Law Firm Template" }],
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
   alternates: {
     canonical: "/",
   },
@@ -39,13 +45,13 @@ export const metadata: Metadata = {
     type: "website",
     locale: "he_IL",
     url: siteUrl,
-    siteName: "משרד עו״ד כהן ושות׳",
+    siteName: "משרד עורכי דין מוביל",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "משרד עו״ד כהן ושות׳ - עורך דין מסחרי לעסקים",
+        alt: "משרד עורכי דין מוביל - עורך דין מסחרי לעסקים",
       },
     ],
   },

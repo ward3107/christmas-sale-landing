@@ -17,11 +17,16 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   body {
     @apply font-sans;
     font-family: var(--font-rubik), system-ui, sans-serif;
+    overflow-x: hidden;
+    max-width: 100vw;
+    position: relative;
   }
 
   /* Better focus styles */
