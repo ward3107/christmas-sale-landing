@@ -64,4 +64,5 @@ export async function sendLeadNotification(params: EmailTemplateParams): Promise
   }
 }
 
-export default { initEmailJS, sendLeadNotification };
+const emailJSService = { initEmailJS, sendLeadNotification };
+export default emailJSService;

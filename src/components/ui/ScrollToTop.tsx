@@ -37,8 +37,8 @@ export function ScrollToTop() {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed bottom-6 left-6 z-50 flex items-center justify-center w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg transition-all duration-300 hover:scale-110 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"
+      className={`fixed bottom-20 sm:bottom-24 md:bottom-6 left-4 sm:left-6 z-50 flex items-center justify-center w-12 h-12 bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg transition-all duration-300 hover:scale-110 opacity-60 hover:opacity-100 ${
+        isVisible ? "translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"
       }`}
       aria-label="חזרה למעלה"
     >

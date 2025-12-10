@@ -29,8 +29,8 @@ export function WhatsAppButton() {
 
   return (
     <div
-      className={`fixed bottom-6 right-6 z-50 transition-all duration-500 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+      className={`fixed bottom-20 sm:bottom-24 md:bottom-6 right-4 sm:right-6 z-50 transition-all duration-500 opacity-60 hover:opacity-100 ${
+        isVisible ? "translate-y-0" : "opacity-0 translate-y-10"
       }`}
     >
       {/* Tooltip */}

@@ -34,31 +34,6 @@ export function AccessibilityWidget() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const firstFocusableRef = useRef<HTMLButtonElement>(null);
 
-  // Load settings on mount
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        setSettings(parsed);
-        applySettings(parsed);
-      } catch (e) {
-        console.warn("Failed to parse accessibility settings:", e);
-      }
-    }
-
-    // Check if widget was hidden
-    const hidden = localStorage.getItem(HIDDEN_KEY);
-    if (hidden === "true") {
-      setIsHidden(true);
-    }
-
-    // Check for system preferences
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      updateSetting("reducedMotion", true);
-    }
-  }, []);
-
   // Apply settings to DOM
   const applySettings = useCallback((newSettings: AccessibilitySettings) => {
     const root = document.documentElement;
@@ -95,6 +70,32 @@ export function AccessibilityWidget() {
     },
     [settings, applySettings]
   );
+
+  // Load settings on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setSettings(parsed);
+        applySettings(parsed);
+      } catch (e) {
+        console.warn("Failed to parse accessibility settings:", e);
+      }
+    }
+
+    // Check if widget was hidden
+    const hidden = localStorage.getItem(HIDDEN_KEY);
+    if (hidden === "true") {
+      setIsHidden(true);
+    }
+
+    // Check for system preferences
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      updateSetting("reducedMotion", true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Reset to defaults
   const resetToDefaults = useCallback(() => {

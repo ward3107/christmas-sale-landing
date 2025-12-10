@@ -44,7 +44,7 @@ export default function AccessibilityPage() {
             {/* 1. מחויבות */}
             <h2>1. מחויבותנו לנגישות</h2>
             <p>
-              <strong>משרד עו״ד כהן ושות׳ בע״מ</strong> מחויב להנגיש את אתר האינטרנט שלו
+              <strong>משרד עורכי דין מוביל</strong> מחויב להנגיש את אתר האינטרנט שלו
               לאנשים עם מוגבלויות, בהתאם לתקנות שוויון זכויות לאנשים עם מוגבלות
               (התאמות נגישות לשירות), התשע״ג-2013.
             </p>
@@ -121,14 +121,14 @@ export default function AccessibilityPage() {
                 </li>
                 <li>
                   <strong>טלפון:</strong>{" "}
-                  <a href="tel:0501234567" className="text-blue-600 hover:underline">
-                    050-1234567
+                  <a href="tel:0534260632" className="text-blue-600 hover:underline">
+                    053-4260632
                   </a>
                 </li>
                 <li>
                   <strong>דוא״ל:</strong>{" "}
-                  <a href="mailto:accessibility@cohen-law.co.il" className="text-blue-600 hover:underline">
-                    accessibility@cohen-law.co.il
+                  <a href="mailto:wasya92@gmail.com" className="text-blue-600 hover:underline">
+                    wasya92@gmail.com
                   </a>
                 </li>
                 <li>
@@ -189,7 +189,7 @@ export default function AccessibilityPage() {
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-400 py-8">
         <div className="container mx-auto px-4 text-center">
-          <p>© {new Date().getFullYear()} משרד עו״ד כהן ושות׳. כל הזכויות שמורות.</p>
+          <p>© {new Date().getFullYear()} משרד עורכי דין מוביל. כל הזכויות שמורות.</p>
           <div className="flex justify-center gap-6 mt-4">
             <Link href="/terms" className="hover:text-white transition-colors">תקנון</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">מדיניות פרטיות</Link>

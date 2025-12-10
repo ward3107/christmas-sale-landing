@@ -44,8 +44,8 @@ export default function PrivacyPage() {
             {/* 1. מבוא */}
             <h2>1. מבוא</h2>
             <p>
-              <strong>משרד עו״ד כהן ושות׳ בע״מ</strong> (ח.פ. 51-XXXXXXX-X) מכבדת את פרטיות
-              המשתמשים באתר ומחויבת להגן על המידע האישי שנאסף.
+              <strong>משרד עורכי דין מוביל</strong> מכבד את פרטיות
+              המשתמשים באתר ומחויב להגן על המידע האישי שנאסף.
             </p>
             <p>
               מדיניות פרטיות זו מסבירה כיצד אנו אוספים, משתמשים, שומרים ומגנים על המידע שלך,
@@ -54,8 +54,8 @@ export default function PrivacyPage() {
             </p>
             <p>
               <strong>כתובתנו:</strong> מגדלי ב.ס.ר 4, קומה 25, רמת גן<br />
-              <strong>דוא״ל:</strong> <a href="mailto:office@cohen-law.co.il">office@cohen-law.co.il</a><br />
-              <strong>דוא״ל לפניות פרטיות:</strong> <a href="mailto:privacy@cohen-law.co.il">privacy@cohen-law.co.il</a>
+              <strong>דוא״ל:</strong> <a href="mailto:wasya92@gmail.com">wasya92@gmail.com</a><br />
+              <strong>דוא״ל לפניות פרטיות:</strong> <a href="mailto:wasya92@gmail.com">wasya92@gmail.com</a>
             </p>
 
             {/* 2. סוגי מידע שנאסף */}
@@ -196,8 +196,8 @@ export default function PrivacyPage() {
               <p className="text-blue-900">
                 <strong>למימוש זכויותיך:</strong><br />
                 שלח/י בקשה ל-
-                <a href="mailto:privacy@cohen-law.co.il" className="text-blue-600 hover:underline mx-1">
-                  privacy@cohen-law.co.il
+                <a href="mailto:wasya92@gmail.com" className="text-blue-600 hover:underline mx-1">
+                  wasya92@gmail.com
                 </a>
                 <br />
                 נשיב תוך 30 יום כנדרש בחוק.
@@ -233,8 +233,8 @@ export default function PrivacyPage() {
             <h2>12. יצירת קשר</h2>
             <p>לשאלות בנושא פרטיות, ניתן לפנות:</p>
             <ul>
-              <li>דוא״ל: <a href="mailto:privacy@cohen-law.co.il" className="text-blue-600 hover:underline">privacy@cohen-law.co.il</a></li>
-              <li>טלפון: 050-1234567</li>
+              <li>דוא״ל: <a href="mailto:wasya92@gmail.com" className="text-blue-600 hover:underline">wasya92@gmail.com</a></li>
+              <li>טלפון: 053-4260632</li>
               <li>כתובת: מגדלי ב.ס.ר 4, קומה 25, רמת גן</li>
             </ul>
 
@@ -245,7 +245,7 @@ export default function PrivacyPage() {
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-400 py-8">
         <div className="container mx-auto px-4 text-center">
-          <p>© {new Date().getFullYear()} משרד עו״ד כהן ושות׳. כל הזכויות שמורות.</p>
+          <p>© {new Date().getFullYear()} משרד עורכי דין מוביל. כל הזכויות שמורות.</p>
           <div className="flex justify-center gap-6 mt-4">
             <Link href="/terms" className="hover:text-white transition-colors">תקנון</Link>
             <Link href="/accessibility" className="hover:text-white transition-colors">הצהרת נגישות</Link>

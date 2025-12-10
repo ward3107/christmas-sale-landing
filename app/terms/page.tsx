@@ -44,12 +44,11 @@ export default function TermsPage() {
             {/* 1. מבוא והגדרות */}
             <h2>1. מבוא והגדרות</h2>
             <p>
-              ברוכים הבאים לאתר <strong>משרד עו״ד כהן ושות׳</strong> (להלן: &quot;האתר&quot;),
-              המופעל בכתובת <strong>cohen-law.co.il</strong>.
+              ברוכים הבאים לאתר <strong>משרד עורכי דין מוביל</strong> (להלן: &quot;האתר&quot;).
             </p>
             <p>
-              האתר מופעל על ידי <strong>משרד עו״ד כהן ושות׳ בע״מ</strong>,
-              ח.פ. 51-XXXXXXX-X, מרחוב מגדלי ב.ס.ר 4, קומה 25, רמת גן
+              האתר מופעל על ידי <strong>משרד עורכי דין מוביל</strong>,
+              מרחוב מגדלי ב.ס.ר 4, קומה 25, רמת גן
               (להלן: &quot;החברה&quot; או &quot;אנחנו&quot;).
             </p>
             <p>
@@ -199,8 +198,8 @@ export default function TermsPage() {
             <h2>13. יצירת קשר</h2>
             <p>לשאלות או הבהרות בנוגע לתקנון זה, ניתן לפנות אלינו:</p>
             <ul>
-              <li>דוא״ל: <a href="mailto:office@cohen-law.co.il" className="text-blue-600 hover:underline">office@cohen-law.co.il</a></li>
-              <li>טלפון: 050-1234567</li>
+              <li>דוא״ל: <a href="mailto:wasya92@gmail.com" className="text-blue-600 hover:underline">wasya92@gmail.com</a></li>
+              <li>טלפון: 053-4260632</li>
               <li>כתובת: מגדלי ב.ס.ר 4, קומה 25, רמת גן</li>
             </ul>
 
@@ -211,7 +210,7 @@ export default function TermsPage() {
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-400 py-8">
         <div className="container mx-auto px-4 text-center">
-          <p>© {new Date().getFullYear()} משרד עו״ד כהן ושות׳. כל הזכויות שמורות.</p>
+          <p>© {new Date().getFullYear()} משרד עורכי דין מוביל. כל הזכויות שמורות.</p>
           <div className="flex justify-center gap-6 mt-4">
             <Link href="/privacy" className="hover:text-white transition-colors">מדיניות פרטיות</Link>
             <Link href="/accessibility" className="hover:text-white transition-colors">הצהרת נגישות</Link>
