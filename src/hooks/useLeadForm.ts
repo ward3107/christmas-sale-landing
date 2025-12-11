@@ -4,12 +4,14 @@
 // LEAD FORM HOOK
 // =============================================================================
 // Custom React hook for handling contact form submissions.
-// Manages form state and submits data to Firebase Firestore.
+// Manages form state, submits data to Firebase Firestore, and sends email
+// notifications via EmailJS (free tier: 200 emails/month).
 // =============================================================================
 
 import { useState, useCallback } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { sendLeadNotification } from "@/lib/emailjs";
 
 // Types for the lead data
 export interface LeadData {
@@ -96,26 +98,17 @@ export function useLeadForm(): UseLeadFormReturn {
         }
       }
 
-      // Send email via Formspree (simple, no setup needed)
-      const formspreeEndpoint = process.env.NEXT_PUBLIC_FORMSPREE_ID;
-      if (formspreeEndpoint) {
-        const emailResponse = await fetch(`https://formspree.io/f/${formspreeEndpoint}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          },
-          body: JSON.stringify({
-            name: data.name.trim(),
-            email: data.email.trim(),
-            phone: data.phone.trim(),
-            message: data.message?.trim() || "לא צוינה הודעה",
-          }),
+      // Send email via EmailJS (free tier: 200 emails/month)
+      try {
+        await sendLeadNotification({
+          from_name: data.name.trim(),
+          from_email: data.email.trim(),
+          from_phone: data.phone.trim(),
+          message: data.message?.trim() || "לא צוינה הודעה",
         });
-
-        if (!emailResponse.ok) {
-          throw new Error("שליחת האימייל נכשלה. נא לנסות שוב.");
-        }
+      } catch (emailError) {
+        console.error("EmailJS send failed:", emailError);
+        throw new Error("שליחת האימייל נכשלה. נא לנסות שוב.");
       }
 
       // Success state
