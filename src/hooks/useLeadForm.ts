@@ -4,14 +4,10 @@
 // LEAD FORM HOOK
 // =============================================================================
 // Custom React hook for handling contact form submissions.
-// Manages form state, submits data to Firebase Firestore, and sends email
-// notifications via EmailJS (free tier: 200 emails/month).
+// Submits to secure server-side API route with rate limiting and validation.
 // =============================================================================
 
 import { useState, useCallback } from "react";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "@/lib/firebase";
-import { sendLeadNotification } from "@/lib/emailjs";
 
 // Types for the lead data
 export interface LeadData {
@@ -19,6 +15,9 @@ export interface LeadData {
   phone: string;
   email: string;
   message?: string;
+  termsAccepted?: boolean;
+  marketingConsent?: boolean;
+  honeypot?: string;
 }
 
 export interface LeadFormState {
@@ -33,7 +32,7 @@ export interface UseLeadFormReturn extends LeadFormState {
   reset: () => void;
 }
 
-const COLLECTION_NAME = "leads";
+const API_ENDPOINT = "/api/contact";
 
 export function useLeadForm(): UseLeadFormReturn {
   const [state, setState] = useState<LeadFormState>({
@@ -53,7 +52,7 @@ export function useLeadForm(): UseLeadFormReturn {
     });
   }, []);
 
-  // Submit lead data to Firestore
+  // Submit lead data to server API
   const submitLead = useCallback(async (data: LeadData): Promise<boolean> => {
     // Reset previous state
     setState({
@@ -64,7 +63,7 @@ export function useLeadForm(): UseLeadFormReturn {
     });
 
     try {
-      // Validate required fields
+      // Validate required fields on client side (quick check before API call)
       if (!data.name?.trim() || !data.phone?.trim() || !data.email?.trim()) {
         throw new Error("נא למלא את כל השדות הנדרשים");
       }
@@ -75,40 +74,19 @@ export function useLeadForm(): UseLeadFormReturn {
         throw new Error("כתובת אימייל לא תקינה");
       }
 
-      // Prepare the document data
-      const leadDocument = {
-        name: data.name.trim(),
-        phone: data.phone.trim(),
-        email: data.email.trim().toLowerCase(),
-        message: data.message?.trim() || "",
-        createdAt: serverTimestamp(),
-        source: typeof window !== "undefined" ? window.location.href : "",
-        userAgent:
-          typeof navigator !== "undefined" ? navigator.userAgent : "",
-        status: "new", // For lead management
-      };
+      // Call the secure API endpoint
+      const response = await fetch(API_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-      // Try to add document to Firestore (non-blocking - don't fail if Firebase fails)
-      // Skip Firebase if not configured
-      if (process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
-        try {
-          await addDoc(collection(db, COLLECTION_NAME), leadDocument);
-        } catch (firebaseError) {
-          console.warn("Firebase save failed (continuing with email):", firebaseError);
-        }
-      }
+      const result = await response.json();
 
-      // Send email via EmailJS (free tier: 200 emails/month)
-      try {
-        await sendLeadNotification({
-          from_name: data.name.trim(),
-          from_email: data.email.trim(),
-          from_phone: data.phone.trim(),
-          message: data.message?.trim() || "לא צוינה הודעה",
-        });
-      } catch (emailError) {
-        console.error("EmailJS send failed:", emailError);
-        throw new Error("שליחת האימייל נכשלה. נא לנסות שוב.");
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "אירעה שגיאה בשליחת הטופס. נא לנסות שוב.");
       }
 
       // Success state

@@ -18,16 +18,25 @@ interface ConsentState {
   marketingConsent: boolean;
 }
 
+interface FormDataWithSecurity extends LeadData {
+  termsAccepted: boolean;
+  marketingConsent: boolean;
+  honeypot?: string;
+}
+
 export function ContactForm() {
   const { contact } = siteConfig;
   const { isLoading, isSuccess, isError, errorMessage, submitLead, reset } =
     useLeadForm();
 
-  const [formData, setFormData] = useState<LeadData>({
+  const [formData, setFormData] = useState<FormDataWithSecurity>({
     name: "",
     phone: "",
     email: "",
     message: "",
+    termsAccepted: false,
+    marketingConsent: false,
+    honeypot: "",
   });
 
   const [consent, setConsent] = useState<ConsentState>({
@@ -61,8 +70,17 @@ export function ContactForm() {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const target = e.target as HTMLInputElement;
+    const { name, value, type, checked } = target;
+    const newValue = type === "checkbox" ? checked : value;
+    setFormData((prev) => ({ ...prev, [name]: newValue }));
+
+    // Also sync consent state for checkboxes
+    if (type === "checkbox") {
+      if (name === "termsAccepted" || name === "marketingConsent") {
+        setConsent((prev) => ({ ...prev, [name]: checked }));
+      }
+    }
   };
 
   // Handle form submission
@@ -70,14 +88,32 @@ export function ContactForm() {
     e.preventDefault();
     const success = await submitLead(formData);
     if (success) {
-      setFormData({ name: "", phone: "", email: "", message: "" });
+      setFormData({
+        name: "",
+        phone: "",
+        email: "",
+        message: "",
+        termsAccepted: false,
+        marketingConsent: false,
+        honeypot: "",
+      });
+      setConsent({ termsAccepted: false, marketingConsent: false });
     }
   };
 
   // Reset form and state
   const handleReset = () => {
     reset();
-    setFormData({ name: "", phone: "", email: "", message: "" });
+    setFormData({
+      name: "",
+      phone: "",
+      email: "",
+      message: "",
+      termsAccepted: false,
+      marketingConsent: false,
+      honeypot: "",
+    });
+    setConsent({ termsAccepted: false, marketingConsent: false });
   };
 
   return (
@@ -187,6 +223,25 @@ export function ContactForm() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Honeypot field - hidden from users but accessible to bots */}
+                  <input
+                    type="text"
+                    name="honeypot"
+                    value={formData.honeypot || ""}
+                    onChange={handleChange}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    style={{
+                      position: "absolute",
+                      left: "-5000px",
+                      width: "0",
+                      height: "0",
+                      opacity: "0",
+                      pointerEvents: "none",
+                    }}
+                    aria-hidden="true"
+                  />
+
                   {/* Error Message */}
                   {isError && (
                     <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
@@ -282,8 +337,9 @@ export function ContactForm() {
                     <label className="flex items-start gap-3 cursor-pointer">
                       <input
                         type="checkbox"
-                        checked={consent.termsAccepted}
-                        onChange={() => setConsent(prev => ({ ...prev, termsAccepted: !prev.termsAccepted }))}
+                        name="termsAccepted"
+                        checked={formData.termsAccepted}
+                        onChange={handleChange}
                         required
                         className="mt-1 w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                       />
@@ -304,8 +360,9 @@ export function ContactForm() {
                     <label className="flex items-start gap-3 cursor-pointer">
                       <input
                         type="checkbox"
-                        checked={consent.marketingConsent}
-                        onChange={() => setConsent(prev => ({ ...prev, marketingConsent: !prev.marketingConsent }))}
+                        name="marketingConsent"
+                        checked={formData.marketingConsent}
+                        onChange={handleChange}
                         className="mt-1 w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                       />
                       <span className="text-sm text-slate-600 leading-relaxed">
