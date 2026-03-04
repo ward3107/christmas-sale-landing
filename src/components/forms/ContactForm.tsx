@@ -151,7 +151,7 @@ export function ContactForm() {
                 className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow group"
               >
                 <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                  <Icon name="Phone" className="w-6 h-6" />
+                  <Icon name="Phone" className="w-6 h-6" aria-hidden="true" />
                 </div>
                 <div>
                   <div className="text-sm text-slate-500">טלפון</div>
@@ -167,7 +167,7 @@ export function ContactForm() {
                 className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow group"
               >
                 <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                  <Icon name="Mail" className="w-6 h-6" />
+                  <Icon name="Mail" className="w-6 h-6" aria-hidden="true" />
                 </div>
                 <div>
                   <div className="text-sm text-slate-500">אימייל</div>
@@ -180,7 +180,7 @@ export function ContactForm() {
               {/* Address */}
               <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm">
                 <div className="flex-shrink-0 w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600">
-                  <Icon name="MapPin" className="w-6 h-6" />
+                  <Icon name="MapPin" className="w-6 h-6" aria-hidden="true" />
                 </div>
                 <div>
                   <div className="text-sm text-slate-500">כתובת</div>
@@ -205,7 +205,7 @@ export function ContactForm() {
               {isSuccess ? (
                 <div className="text-center py-8">
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full text-green-600 mb-6">
-                    <Icon name="Check" className="w-8 h-8" />
+                    <Icon name="Check" className="w-8 h-8" aria-hidden="true" />
                   </div>
                   <h3 className="text-2xl font-bold text-slate-900 mb-2">
                     תודה על פנייתך!
@@ -218,7 +218,7 @@ export function ContactForm() {
                     className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
                   >
                     <span>שליחת פנייה נוספת</span>
-                    <Icon name="ArrowRight" className="w-4 h-4 rtl:rotate-180" />
+                    <Icon name="ArrowRight" className="w-4 h-4 rtl:rotate-180" aria-hidden="true" />
                   </button>
                 </div>
               ) : (
@@ -244,9 +244,16 @@ export function ContactForm() {
 
                   {/* Error Message */}
                   {isError && (
-                    <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
-                      <Icon name="AlertCircle" className="w-5 h-5 flex-shrink-0" />
-                      <span>{errorMessage}</span>
+                    <div
+                      role="alert"
+                      className="flex items-center gap-3 p-4 bg-red-50 border-2 border-red-400 rounded-xl text-red-700"
+                      aria-live="polite"
+                    >
+                      <Icon name="AlertCircle" className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
+                      <span className="font-medium">
+                        <span className="sr-only">שגיאה: </span>
+                        {errorMessage}
+                      </span>
                     </div>
                   )}
 
@@ -256,7 +263,8 @@ export function ContactForm() {
                       htmlFor="name"
                       className="block text-sm font-medium text-slate-700 mb-2"
                     >
-                      שם מלא <span className="text-red-500">*</span>
+                      שם מלא <span className="text-red-500" aria-hidden="true">*</span>
+                      <span className="sr-only">(חובה)</span>
                     </label>
                     <input
                       type="text"
@@ -265,6 +273,7 @@ export function ContactForm() {
                       value={formData.name}
                       onChange={handleChange}
                       required
+                      aria-required="true"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-slate-900"
                       placeholder="הזינו את שמכם"
                     />
@@ -276,7 +285,8 @@ export function ContactForm() {
                       htmlFor="phone"
                       className="block text-sm font-medium text-slate-700 mb-2"
                     >
-                      טלפון <span className="text-red-500">*</span>
+                      טלפון <span className="text-red-500" aria-hidden="true">*</span>
+                      <span className="sr-only">(חובה)</span>
                     </label>
                     <input
                       type="tel"
@@ -285,6 +295,7 @@ export function ContactForm() {
                       value={formData.phone}
                       onChange={handleChange}
                       required
+                      aria-required="true"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-slate-900"
                       placeholder="050-1234567"
                       dir="ltr"
@@ -297,7 +308,8 @@ export function ContactForm() {
                       htmlFor="email"
                       className="block text-sm font-medium text-slate-700 mb-2"
                     >
-                      אימייל <span className="text-red-500">*</span>
+                      אימייל <span className="text-red-500" aria-hidden="true">*</span>
+                      <span className="sr-only">(חובה)</span>
                     </label>
                     <input
                       type="email"
@@ -306,6 +318,7 @@ export function ContactForm() {
                       value={formData.email}
                       onChange={handleChange}
                       required
+                      aria-required="true"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-slate-900"
                       placeholder="your@email.com"
                       dir="ltr"
@@ -380,13 +393,13 @@ export function ContactForm() {
                   >
                     {isLoading ? (
                       <>
-                        <Icon name="Loader2" className="w-5 h-5 animate-spin" />
+                        <Icon name="Loader2" className="w-5 h-5 animate-spin" aria-hidden="true" />
                         <span>שולח...</span>
                       </>
                     ) : (
                       <>
                         <span>שליחת פנייה</span>
-                        <Icon name="Send" className="w-5 h-5" />
+                        <Icon name="Send" className="w-5 h-5" aria-hidden="true" />
                       </>
                     )}
                   </button>

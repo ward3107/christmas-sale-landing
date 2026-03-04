@@ -37,15 +37,20 @@ export function Testimonials() {
 
   // Render star rating
   const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, index) => (
-      <Icon
-        key={index}
-        name="Star"
-        className={`w-5 h-5 ${
-          index < rating ? "text-yellow-400 fill-yellow-400" : "text-slate-300"
-        }`}
-      />
-    ));
+    return (
+      <div className="flex items-center gap-1" role="img" aria-label={`${rating} מתוך 5 כוכבים`}>
+        {Array.from({ length: 5 }, (_, index) => (
+          <Icon
+            key={index}
+            name="Star"
+            className={`w-5 h-5 ${
+              index < rating ? "text-yellow-400 fill-yellow-400" : "text-slate-300"
+            }`}
+            aria-hidden="true"
+          />
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -92,7 +97,7 @@ export function Testimonials() {
               </div>
 
               {/* Stars */}
-              <div className="flex items-center gap-1 mb-4 relative z-10">
+              <div className="mb-4 relative z-10">
                 {renderStars(testimonial.rating)}
               </div>
 

@@ -34,27 +34,36 @@ export function Footer() {
             </p>
 
             {/* Social Links */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4" role="list" aria-label="רשתות חברתיות">
               <a
-                href="#"
+                href="https://facebook.com/cohen-law"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 bg-slate-800 hover:bg-blue-600 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors"
-                aria-label="Facebook"
+                aria-label="בקרו אותנו בפייסבוק (נפתח בחלון חדש)"
+                role="listitem"
               >
-                <Icon name="Facebook" className="w-5 h-5" />
+                <Icon name="Facebook" className="w-5 h-5" aria-hidden="true" />
               </a>
               <a
-                href="#"
+                href="https://linkedin.com/company/cohen-law"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 bg-slate-800 hover:bg-blue-600 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors"
-                aria-label="LinkedIn"
+                aria-label="בקרו אותנו בלינקדאין (נפתח בחלון חדש)"
+                role="listitem"
               >
-                <Icon name="Linkedin" className="w-5 h-5" />
+                <Icon name="Linkedin" className="w-5 h-5" aria-hidden="true" />
               </a>
               <a
-                href="#"
+                href="https://twitter.com/cohen_law"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 bg-slate-800 hover:bg-blue-600 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors"
-                aria-label="Twitter"
+                aria-label="בקרו אותנו בטוויטר (נפתח בחלון חדש)"
+                role="listitem"
               >
-                <Icon name="Twitter" className="w-5 h-5" />
+                <Icon name="Twitter" className="w-5 h-5" aria-hidden="true" />
               </a>
             </div>
           </div>
@@ -68,7 +77,7 @@ export function Footer() {
               <li>
                 <a
                   href="#hero"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className="text-slate-400 hover:text-white hover:underline transition-colors"
                 >
                   דף הבית
                 </a>
@@ -76,7 +85,7 @@ export function Footer() {
               <li>
                 <a
                   href="#services"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className="text-slate-400 hover:text-white hover:underline transition-colors"
                 >
                   שירותים
                 </a>
@@ -84,7 +93,7 @@ export function Footer() {
               <li>
                 <a
                   href="#about"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className="text-slate-400 hover:text-white hover:underline transition-colors"
                 >
                   אודות
                 </a>
@@ -92,7 +101,7 @@ export function Footer() {
               <li>
                 <a
                   href="#contact"
-                  className="text-slate-400 hover:text-white transition-colors"
+                  className="text-slate-400 hover:text-white hover:underline transition-colors"
                 >
                   צור קשר
                 </a>
@@ -107,18 +116,18 @@ export function Footer() {
               <li>
                 <a
                   href={`tel:${contact.phone.replace(/-/g, "")}`}
-                  className="flex items-center gap-3 text-slate-400 hover:text-white transition-colors"
+                  className="flex items-center gap-3 text-slate-400 hover:text-white hover:underline transition-colors"
                 >
-                  <Icon name="Phone" className="w-5 h-5 text-blue-400" />
+                  <Icon name="Phone" className="w-5 h-5 text-blue-400" aria-hidden="true" />
                   <span>{contact.phone}</span>
                 </a>
               </li>
               <li>
                 <a
                   href={`mailto:${contact.email}`}
-                  className="flex items-center gap-3 text-slate-400 hover:text-white transition-colors"
+                  className="flex items-center gap-3 text-slate-400 hover:text-white hover:underline transition-colors"
                 >
-                  <Icon name="Mail" className="w-5 h-5 text-blue-400" />
+                  <Icon name="Mail" className="w-5 h-5 text-blue-400" aria-hidden="true" />
                   <span>{contact.email}</span>
                 </a>
               </li>
@@ -126,6 +135,7 @@ export function Footer() {
                 <Icon
                   name="MapPin"
                   className="w-5 h-5 text-blue-400 flex-shrink-0 mt-1"
+                  aria-hidden="true"
                 />
                 <span>{contact.address}</span>
               </li>

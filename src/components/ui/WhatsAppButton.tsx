@@ -57,11 +57,8 @@ export function WhatsAppButton() {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Pulse Animation Ring */}
-        <span className="absolute inset-0 rounded-full bg-[#25D366] animate-ping opacity-30" />
-
         {/* Icon */}
-        <MessageCircle className="w-8 h-8 text-white" strokeWidth={2} />
+        <MessageCircle className="w-8 h-8 text-white" strokeWidth={2} aria-hidden="true" />
       </a>
     </div>
   );

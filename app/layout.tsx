@@ -7,6 +7,7 @@
 
 import type { Metadata, Viewport } from "next";
 import { Rubik } from "next/font/google";
+import Script from "next/script";
 import { siteConfig } from "@/config/site-config";
 import { SecurityProvider } from "@/components/providers/SecurityProvider";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -90,6 +91,10 @@ export default function RootLayout({
       <head>
         {/* JSON-LD Structured Data */}
         <JsonLd url={siteUrl} />
+        {/* Social Widget CSS */}
+        <link rel="stylesheet" href="/social-widget/social-widget.css" />
+        {/* Accessibility Widget CSS */}
+        <link rel="stylesheet" href="/accessibility-widget/accessibility-widget.css" />
       </head>
       <body className="font-sans antialiased bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
         {/* Skip Link for Accessibility */}
@@ -102,6 +107,17 @@ export default function RootLayout({
             {children}
           </main>
         </SecurityProvider>
+
+        {/* Social Widget JS */}
+        <Script
+          src="/social-widget/social-widget.js"
+          strategy="afterInteractive"
+        />
+        {/* Accessibility Widget JS */}
+        <Script
+          src="/accessibility-widget/accessibility-widget.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

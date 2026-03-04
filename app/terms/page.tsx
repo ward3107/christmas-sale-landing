@@ -19,9 +19,11 @@ export default function TermsPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-6 transition-colors"
+            className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 hover:underline mb-6 transition-colors"
+            aria-label="חזרה לדף הבית"
           >
-            ← חזרה לדף הבית
+            <span aria-hidden="true">←</span>
+            <span>חזרה לדף הבית</span>
           </Link>
           <h1 className="text-3xl md:text-4xl font-bold">תקנון ותנאי שימוש</h1>
           <p className="text-slate-400 mt-2">עדכון אחרון: דצמבר 2024</p>
@@ -212,8 +214,8 @@ export default function TermsPage() {
         <div className="container mx-auto px-4 text-center">
           <p>© {new Date().getFullYear()} משרד עורכי דין מוביל. כל הזכויות שמורות.</p>
           <div className="flex justify-center gap-6 mt-4">
-            <Link href="/privacy" className="hover:text-white transition-colors">מדיניות פרטיות</Link>
-            <Link href="/accessibility" className="hover:text-white transition-colors">הצהרת נגישות</Link>
+            <Link href="/privacy" className="hover:text-white hover:underline transition-colors">מדיניות פרטיות</Link>
+            <Link href="/accessibility" className="hover:text-white hover:underline transition-colors">הצהרת נגישות</Link>
           </div>
         </div>
       </footer>

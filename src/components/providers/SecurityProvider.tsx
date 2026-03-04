@@ -9,8 +9,8 @@
 
 import { useEffect } from "react";
 import { initializeCSP, securityManager } from "@/security";
-import { AccessibilityWidget } from "@/components/ui/AccessibilityWidget";
 import { CookieConsent } from "@/components/ui/CookieConsent";
+import { ScrollToTop } from "@/components/ui/ScrollToTop";
 
 interface SecurityProviderProps {
   children: React.ReactNode;
@@ -64,7 +64,7 @@ export function SecurityProvider({ children }: SecurityProviderProps) {
   return (
     <>
       {children}
-      <AccessibilityWidget />
+      <ScrollToTop />
       <CookieConsent />
     </>
   );

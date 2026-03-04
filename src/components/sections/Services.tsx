@@ -72,8 +72,8 @@ export function Services() {
               }}
             >
               {/* Icon */}
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-blue-600/20 text-blue-400 mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-                <Icon name={service.iconName} className="w-7 h-7" />
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-blue-600/20 text-blue-400 mb-6 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300" aria-hidden="true">
+                <Icon name={service.iconName} className="w-7 h-7" aria-hidden="true" />
               </div>
 
               {/* Content */}
@@ -91,9 +91,11 @@ export function Services() {
                   className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium transition-colors"
                 >
                   <span>למידע נוסף</span>
+                  <span className="sr-only"> על {service.title}</span>
                   <Icon
                     name="ArrowRight"
                     className="w-4 h-4 transition-transform group-hover:-translate-x-1 rtl:rotate-180 rtl:group-hover:translate-x-1"
+                    aria-hidden="true"
                   />
                 </a>
               </div>
@@ -118,7 +120,7 @@ export function Services() {
             className="inline-flex items-center gap-3 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-full transition-all duration-200 shadow-lg shadow-blue-600/25 hover:shadow-blue-500/40 hover:scale-105"
           >
             <span>דברו איתנו</span>
-            <Icon name="MessageCircle" className="w-5 h-5" />
+            <Icon name="MessageCircle" className="w-5 h-5" aria-hidden="true" />
           </a>
         </div>
       </div>

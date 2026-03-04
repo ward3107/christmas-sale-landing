@@ -98,10 +98,12 @@ export function FAQ() {
                     className={`flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center transition-transform duration-300 ${
                       openIndex === index ? "rotate-180" : ""
                     }`}
+                    aria-hidden="true"
                   >
                     <Icon
                       name="ChevronDown"
                       className="w-5 h-5 text-blue-600"
+                      aria-hidden="true"
                     />
                   </span>
                 </button>
@@ -141,7 +143,7 @@ export function FAQ() {
             className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full transition-all duration-200 shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40"
           >
             <span>צרו איתנו קשר</span>
-            <Icon name="ArrowLeft" className="w-4 h-4" />
+            <Icon name="ArrowLeft" className="w-4 h-4" aria-hidden="true" />
           </a>
         </div>
       </div>

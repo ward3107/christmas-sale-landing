@@ -59,7 +59,7 @@ export function Navbar() {
             href="/"
             className="flex items-center gap-2 text-xl md:text-2xl font-bold text-slate-800 hover:text-blue-600 transition-colors"
           >
-            <Icon name="Scale" className="w-7 h-7 text-blue-600" />
+            <Icon name="Scale" className="w-7 h-7 text-blue-600" aria-hidden="true" />
             <span className="hidden sm:inline">
               {siteConfig.metadata.title.split("|")[0].trim()}
             </span>
@@ -89,7 +89,7 @@ export function Navbar() {
               href={`tel:${siteConfig.contact.phone.replace(/-/g, "")}`}
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-full transition-all duration-200 shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40 hover:scale-105"
             >
-              <Icon name="Phone" className="w-4 h-4" />
+              <Icon name="Phone" className="w-4 h-4" aria-hidden="true" />
               <span>התקשרו עכשיו</span>
             </a>
           </div>
@@ -101,16 +101,19 @@ export function Navbar() {
             className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
             aria-label={isMobileMenuOpen ? "סגור תפריט" : "פתח תפריט"}
             aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
           >
             <Icon
               name={isMobileMenuOpen ? "X" : "Menu"}
               className="w-6 h-6"
+              aria-hidden="true"
             />
           </button>
         </div>
 
         {/* Mobile Menu */}
         <div
+          id="mobile-menu"
           className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
             isMobileMenuOpen ? "max-h-96 pb-6" : "max-h-0"
           }`}
@@ -130,7 +133,7 @@ export function Navbar() {
               href={`tel:${siteConfig.contact.phone.replace(/-/g, "")}`}
               className="flex items-center justify-center gap-2 mt-4 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full transition-colors"
             >
-              <Icon name="Phone" className="w-4 h-4" />
+              <Icon name="Phone" className="w-4 h-4" aria-hidden="true" />
               <span>התקשרו עכשיו</span>
             </a>
           </div>

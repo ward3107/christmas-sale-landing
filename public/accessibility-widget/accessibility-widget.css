@@ -1,0 +1,498 @@
+/**
+ * =============================================================================
+ * ACCESSIBILITY WIDGET CSS
+ * =============================================================================
+ * Complies with Israel's IS 5568 standard and WCAG 2.0 AA
+ * Zero dependencies - works on any project
+ *
+ * Usage:
+ * <link rel="stylesheet" href="/accessibility-widget/accessibility-widget.css">
+ * <script src="/accessibility-widget/accessibility-widget.js" defer></script>
+ * =============================================================================
+ */
+
+/* =============================================================================
+   CSS VARIABLES (set by JS via brand color detection)
+   ============================================================================= */
+:root {
+  --a11y-brand: #2563EB;
+  --a11y-brand-dark: #1d4ed8;
+  --a11y-brand-rgb: 37, 99, 235;
+  --base-font-size: 16px;
+}
+
+/* =============================================================================
+   TRIGGER BUTTON
+   ============================================================================= */
+#a11y-trigger {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 52px;
+  height: 52px;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--a11y-brand) 50%, transparent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  animation: a11y-pulse 2s ease-in-out infinite;
+}
+
+#a11y-trigger:hover,
+#a11y-trigger:focus {
+  background: var(--a11y-brand);
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(var(--a11y-brand-rgb), 0.4);
+  animation: none;
+}
+
+#a11y-trigger:focus {
+  outline: 3px solid var(--a11y-brand);
+  outline-offset: 3px;
+}
+
+#a11y-trigger svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* Pulse animation for trigger */
+@keyframes a11y-pulse {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 0 rgba(var(--a11y-brand-rgb), 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 10px rgba(var(--a11y-brand-rgb), 0);
+  }
+}
+
+/* =============================================================================
+   PANEL
+   ============================================================================= */
+#a11y-panel {
+  position: fixed;
+  bottom: 85px;
+  right: 20px;
+  width: 320px;
+  max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 120px);
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  z-index: 9997;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #1f2937;
+}
+
+#a11y-panel.open {
+  display: flex;
+}
+
+/* Panel Header */
+#a11y-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--a11y-brand);
+  color: white;
+  flex-shrink: 0;
+}
+
+#a11y-panel-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+}
+
+#a11y-close {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+#a11y-close:hover,
+#a11y-close:focus {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: white;
+}
+
+#a11y-close:focus {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+/* Panel Content */
+#a11y-panel-content {
+  padding: 16px 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Feature Group */
+.a11y-feature {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.a11y-feature:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.a11y-feature-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.a11y-feature-label span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Toggle Switch */
+.a11y-toggle {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.a11y-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.a11y-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #d1d5db;
+  border-radius: 26px;
+  transition: background-color 0.3s;
+}
+
+.a11y-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.a11y-toggle input:checked + .a11y-toggle-slider {
+  background-color: var(--a11y-brand);
+}
+
+.a11y-toggle input:checked + .a11y-toggle-slider:before {
+  transform: translateX(22px);
+}
+
+.a11y-toggle input:focus + .a11y-toggle-slider {
+  outline: 3px solid var(--a11y-brand);
+  outline-offset: 2px;
+}
+
+/* Font Size Control */
+.a11y-font-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.a11y-font-btn {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 8px;
+  border: 2px solid #d1d5db;
+  background: white;
+  color: #374151;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.a11y-font-btn:hover:not(:disabled) {
+  border-color: var(--a11y-brand);
+  color: var(--a11y-brand);
+}
+
+.a11y-font-btn:focus {
+  outline: 3px solid var(--a11y-brand);
+  outline-offset: 2px;
+}
+
+.a11y-font-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.a11y-font-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  min-width: 50px;
+  text-align: center;
+}
+
+/* Reset Button */
+.a11y-reset-btn {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 2px solid var(--a11y-brand);
+  background: white;
+  color: var(--a11y-brand);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.a11y-reset-btn:hover {
+  background: var(--a11y-brand);
+  color: white;
+}
+
+.a11y-reset-btn:focus {
+  outline: 3px solid var(--a11y-brand);
+  outline-offset: 2px;
+}
+
+/* Panel Footer */
+#a11y-panel-footer {
+  padding: 12px 20px;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+#a11y-statement-link {
+  display: block;
+  color: var(--a11y-brand);
+  text-decoration: underline;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+#a11y-statement-link:hover,
+#a11y-statement-link:focus {
+  color: var(--a11y-brand-dark);
+}
+
+#a11y-dismiss {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+#a11y-dismiss:hover,
+#a11y-dismiss:focus {
+  color: #6b7280;
+}
+
+/* =============================================================================
+   ARIA LIVE REGION (visually hidden)
+   ============================================================================= */
+#a11y-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* =============================================================================
+   ACCESSIBILITY CLASSES (applied to page)
+   ============================================================================= */
+
+/* Feature 2: High Contrast */
+body.a11y-contrast {
+  background: #000 !important;
+  color: #FFFF00 !important;
+}
+
+body.a11y-contrast a {
+  color: #00FFFF !important;
+}
+
+body.a11y-contrast * {
+  border-color: #FFFF00 !important;
+}
+
+/* Keep panel readable in contrast mode */
+body.a11y-contrast #a11y-panel {
+  background: #000 !important;
+  color: #FFFF00 !important;
+  border: 2px solid #FFFF00 !important;
+}
+
+body.a11y-contrast #a11y-panel-header {
+  background: #FFFF00 !important;
+  color: #000 !important;
+}
+
+body.a11y-contrast #a11y-panel * {
+  border-color: #FFFF00 !important;
+}
+
+body.a11y-contrast #a11y-panel span {
+  color: #FFFF00 !important;
+}
+
+body.a11y-contrast #a11y-panel .a11y-toggle-slider {
+  background: #333 !important;
+}
+
+body.a11y-contrast #a11y-panel input:checked + .a11y-toggle-slider {
+  background: #FFFF00 !important;
+}
+
+body.a11y-contrast #a11y-panel .a11y-toggle-slider:before {
+  background: #000 !important;
+}
+
+body.a11y-contrast #a11y-panel .a11y-font-btn {
+  background: #000 !important;
+  color: #FFFF00 !important;
+  border-color: #FFFF00 !important;
+}
+
+body.a11y-contrast #a11y-panel .a11y-font-btn:disabled {
+  opacity: 0.5;
+}
+
+body.a11y-contrast #a11y-panel .a11y-font-value {
+  color: #FFFF00 !important;
+}
+
+/* Feature 3: Grayscale */
+html.a11y-gray {
+  filter: grayscale(100%);
+}
+
+/* Feature 4: Underline Links */
+body.a11y-links a {
+  text-decoration: underline !important;
+}
+
+/* Feature 5: Readable Font */
+body.a11y-font,
+body.a11y-font * {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+/* Feature 6: Letter Spacing */
+body.a11y-spacing,
+body.a11y-spacing * {
+  letter-spacing: 0.15em !important;
+}
+
+/* Feature 7: Line Height */
+body.a11y-lh p,
+body.a11y-lh li,
+body.a11y-lh span,
+body.a11y-lh div {
+  line-height: 2.0 !important;
+}
+
+/* Feature 9: Highlight on Hover/Focus */
+body.a11y-highlight *:hover,
+body.a11y-highlight *:focus {
+  outline: 3px solid var(--a11y-brand) !important;
+  outline-offset: 2px !important;
+}
+
+/* Exclude widget itself from highlight */
+body.a11y-highlight #a11y-panel *:hover,
+body.a11y-highlight #a11y-panel *:focus,
+body.a11y-highlight #a11y-trigger:hover,
+body.a11y-highlight #a11y-trigger:focus {
+  outline: none !important;
+}
+
+/* =============================================================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================================================= */
+@media (max-width: 400px) {
+  #a11y-panel {
+    width: calc(100vw - 20px);
+    right: 10px;
+    bottom: 75px;
+  }
+
+  #a11y-trigger {
+    right: 10px;
+    bottom: 10px;
+  }
+}
+
+/* =============================================================================
+   REDUCED MOTION
+   ============================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  #a11y-trigger {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

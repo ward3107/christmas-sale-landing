@@ -14,8 +14,6 @@ import { About } from "@/components/sections/About";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { FAQ } from "@/components/sections/FAQ";
 import { ContactForm } from "@/components/forms/ContactForm";
-import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
-import { ScrollToTop } from "@/components/ui/ScrollToTop";
 
 export default function HomePage() {
   return (
@@ -49,12 +47,6 @@ export default function HomePage() {
 
       {/* Footer */}
       <Footer />
-
-      {/* Floating WhatsApp Button */}
-      <WhatsAppButton />
-
-      {/* Scroll to Top Button */}
-      <ScrollToTop />
     </>
   );
 }

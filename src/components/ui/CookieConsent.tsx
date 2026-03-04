@@ -1,374 +1,520 @@
 "use client";
 
 // =============================================================================
-// COOKIE CONSENT COMPONENT
+// COOKIE CONSENT BANNER
 // =============================================================================
-// GDPR/CCPA compliant cookie consent banner with granular preferences.
-// Appears after 1 second delay on first visit, stores choice in localStorage.
+// Amendment 13 compliant — GTM Consent Mode v2
+// Signals: analytics_storage, ad_storage, ad_user_data, ad_personalization
+// Built: 2026-03-04
+// =============================================================================
+// Complies with Israel's Privacy Protection Law Amendment 13 (August 2025)
+// - Explicit consent (user action required)
+// - Granular controls (Necessary, Analytics, Marketing)
+// - Documented consent (localStorage with timestamp)
+// - Informed consent (clear descriptions per category)
 // =============================================================================
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Icon } from "./Icon";
 
-// Storage keys
-const STORAGE_KEYS = {
-  COOKIE_CONSENT: "cohen-law-cookie-consent",
-  COOKIE_PREFERENCES: "cohen-law-cookie-preferences",
-};
-
-// Cookie categories with descriptions
-const COOKIE_CATEGORIES = {
-  necessary: {
-    label: "עוגיות הכרחיות",
-    description: "נדרשות לתפקוד בסיסי של האתר. לא ניתן לכבות.",
-    required: true,
-  },
-  functional: {
-    label: "עוגיות פונקציונליות",
-    description: "שומרות העדפות והגדרות אישיות.",
-    required: false,
-  },
-  analytics: {
-    label: "עוגיות אנליטיקה",
-    description: "עוזרות לנו להבין כיצד משתמשים באתר.",
-    required: false,
-  },
-  marketing: {
-    label: "עוגיות שיווק",
-    description: "תוכן מותאם אישית והמלצות.",
-    required: false,
-  },
-  advertising: {
-    label: "עוגיות פרסום",
-    description: "פרסומות ממוקדות ורימרקטינג.",
-    required: false,
-  },
-};
-
-type CookieCategory = keyof typeof COOKIE_CATEGORIES;
-
-interface CookiePreferences {
-  necessary: boolean;
-  functional: boolean;
-  analytics: boolean;
-  marketing: boolean;
-  advertising: boolean;
+// Type declarations for GTM
+declare global {
+  interface Window {
+    dataLayer: (Record<string, unknown> | unknown[])[];
+    gtag: (...args: unknown[]) => void;
+  }
 }
 
-const DEFAULT_PREFERENCES: CookiePreferences = {
-  necessary: true,
-  functional: true,
-  analytics: false,
-  marketing: false,
-  advertising: false,
+// =============================================================================
+// CONFIGURATION
+// =============================================================================
+const COOKIE_CONFIG = {
+  privacyPolicyUrl: "/privacy",
+  contactEmail: "wasya92@gmail.com",
+  primaryColor: "#2563eb", // blue-600
+  storageKey: "cookieConsent",
+  consentVersion: "1.0",
+  expiresMonths: 12,
+  defaultLanguage: "he" as LanguageCode,
 };
 
-export function CookieConsent() {
-  const [isVisible, setIsVisible] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [preferences, setPreferences] = useState<CookiePreferences>(DEFAULT_PREFERENCES);
-  const modalRef = useRef<HTMLDivElement>(null);
-  const firstFocusableRef = useRef<HTMLButtonElement>(null);
+// =============================================================================
+// TYPE DEFINITIONS
+// =============================================================================
+type LanguageCode = "he" | "ar" | "en" | "ru";
 
-  // Check consent status on mount
-  useEffect(() => {
-    const hasConsent = localStorage.getItem(STORAGE_KEYS.COOKIE_CONSENT);
+interface ConsentData {
+  version: string;
+  analytics: boolean;
+  marketing: boolean;
+  timestamp: string;
+  language: LanguageCode;
+  expires: string;
+}
 
-    if (!hasConsent) {
-      // Delay showing banner by 1 second
-      const timer = setTimeout(() => setIsVisible(true), 1000);
-      return () => clearTimeout(timer);
-    } else {
-      // Load saved preferences
-      const saved = localStorage.getItem(STORAGE_KEYS.COOKIE_PREFERENCES);
-      if (saved) {
-        try {
-          setPreferences(JSON.parse(saved));
-        } catch (e) {
-          console.warn("Failed to parse cookie preferences:", e);
-        }
-      }
+interface Translations {
+  title: string;
+  description: string;
+  privacyLink: string;
+  acceptAll: string;
+  rejectAll: string;
+  customize: string;
+  savePreferences: string;
+  necessary: string;
+  necessaryDesc: string;
+  analytics: string;
+  analyticsDesc: string;
+  marketing: string;
+  marketingDesc: string;
+  alwaysOn: string;
+  language: string;
+}
+
+// =============================================================================
+// TRANSLATIONS
+// =============================================================================
+const translations: Record<LanguageCode, Translations> = {
+  he: {
+    title: "הסכמה לשימוש בעוגיות",
+    description:
+      "אנו משתמשים בעוגיות כדי לשפר את חוויית הגלישה שלך ולהציג תוכן מותאם אישית. אנא בחר/י אילו סוגי עוגיות את/ה מאשר/ת.",
+    privacyLink: "מדיניות פרטיות",
+    acceptAll: "אשר הכל",
+    rejectAll: "דחה הכל",
+    customize: "התאמה אישית",
+    savePreferences: "שמור העדפות",
+    necessary: "עוגיות הכרחיות",
+    necessaryDesc:
+      "נדרשות לתפקוד האתר. כוללות אבטחה, זיכרון העדפות וטפסים. לא משותפות עם צדדים שלישיים.",
+    analytics: "עוגיות ניתוח",
+    analyticsDesc:
+      "Google Analytics — צפיות בדפים, משך ביקור. נשלחות לשרתי Google. ללא מידע מזהה אישי. משמשות לשיפור האתר.",
+    marketing: "עוגיות שיווקיות",
+    marketingDesc:
+      "Facebook Pixel, Google Ads — משמשות להצגת פרסומות רלוונטיות. משותפות עם Meta ו-Google למטרות מיקוד ומעקב המרות.",
+    alwaysOn: "תמיד פעיל",
+    language: "עברית",
+  },
+  ar: {
+    title: "الموافقة على ملفات تعريف الارتباط",
+    description:
+      "نستخدم ملفات تعريف الارتباط لتحسين تجربة التصفح وعرض محتوى مخصص. يرجى اختيار أنواع ملفات تعريف الارتباط التي توافق عليها.",
+    privacyLink: "سياسة الخصوصية",
+    acceptAll: "قبول الكل",
+    rejectAll: "رفض الكل",
+    customize: "تخصيص",
+    savePreferences: "حفظ التفضيلات",
+    necessary: "ملفات تعريف الارتباط الضرورية",
+    necessaryDesc:
+      "مطلوبة لعمل الموقع. تشمل الأمان وتذكر التفضيلات والنماذج. لا تتم مشاركتها مع أطراف ثالثة.",
+    analytics: "ملفات تعريف الارتباط التحليلية",
+    analyticsDesc:
+      "Google Analytics — مشاهدات الصفحة ومدة الزيارة. ترسل إلى خوادم Google. بدون معلومات تعريف شخصية. تستخدم لتحسين الموقع.",
+    marketing: "ملفات تعريف الارتباط التسويقية",
+    marketingDesc:
+      "Facebook Pixel, Google Ads — تستخدم لعرض إعلانات ذات صلة. تتم مشاركتها مع Meta وGoogle لاستهداف الإعلانات وتتبع التحويلات.",
+    alwaysOn: "دائمًا نشط",
+    language: "العربية",
+  },
+  en: {
+    title: "Cookie Consent",
+    description:
+      "We use cookies to improve your browsing experience and display personalized content. Please choose which types of cookies you consent to.",
+    privacyLink: "Privacy Policy",
+    acceptAll: "Accept All",
+    rejectAll: "Reject All",
+    customize: "Customize",
+    savePreferences: "Save Preferences",
+    necessary: "Necessary Cookies",
+    necessaryDesc:
+      "Required for the site to function. Includes security, preference memory, and forms. Not shared with third parties.",
+    analytics: "Analytics Cookies",
+    analyticsDesc:
+      "Google Analytics — page views, session duration. Data sent to Google servers. No personally identifiable data. Used to improve the site.",
+    marketing: "Marketing Cookies",
+    marketingDesc:
+      "Facebook Pixel, Google Ads — used to show you relevant ads. Data shared with Meta and Google for ad targeting and conversion tracking.",
+    alwaysOn: "Always Active",
+    language: "English",
+  },
+  ru: {
+    title: "Согласие на использование файлов cookie",
+    description:
+      "Мы используем файлы cookie для улучшения вашего опыта просмотра и отображения персонализированного контента. Пожалуйста, выберите, какие типы файлов cookie вы разрешаете.",
+    privacyLink: "Политика конфиденциальности",
+    acceptAll: "Принять все",
+    rejectAll: "Отклонить все",
+    customize: "Настроить",
+    savePreferences: "Сохранить настройки",
+    necessary: "Необходимые файлы cookie",
+    necessaryDesc:
+      "Необходимы для работы сайта. Включают безопасность, сохранение предпочтений и формы. Не передаются третьим лицам.",
+    analytics: "Аналитические файлы cookie",
+    analyticsDesc:
+      "Google Analytics — просмотры страниц, продолжительность сессии. Данные отправляются на серверы Google. Без личных данных. Используются для улучшения сайта.",
+    marketing: "Маркетинговые файлы cookie",
+    marketingDesc:
+      "Facebook Pixel, Google Ads — используются для показа релевантной рекламы. Данные передаются Meta и Google для таргетинга и отслеживания конверсий.",
+    alwaysOn: "Всегда активны",
+    language: "Русский",
+  },
+};
+
+// RTL languages
+const RTL_LANGUAGES: LanguageCode[] = ["he", "ar"];
+
+// =============================================================================
+// HELPER FUNCTIONS
+// =============================================================================
+
+// Detect browser language
+function detectBrowserLanguage(): LanguageCode {
+  if (typeof window === "undefined") return COOKIE_CONFIG.defaultLanguage;
+
+  const browserLang = navigator.language.split("-")[0] as LanguageCode;
+  return translations[browserLang] ? browserLang : COOKIE_CONFIG.defaultLanguage;
+}
+
+// Check if consent is expired
+function isConsentExpired(consent: ConsentData): boolean {
+  const expiresAt = new Date(consent.expires);
+  return new Date() > expiresAt;
+}
+
+// Get stored consent
+function getStoredConsent(): ConsentData | null {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const stored = localStorage.getItem(COOKIE_CONFIG.storageKey);
+    if (!stored) return null;
+
+    const consent: ConsentData = JSON.parse(stored);
+    if (isConsentExpired(consent)) {
+      localStorage.removeItem(COOKIE_CONFIG.storageKey);
+      return null;
     }
-  }, []);
 
-  // Focus trap and keyboard handling
-  useEffect(() => {
-    if (!isVisible) return;
+    return consent;
+  } catch {
+    return null;
+  }
+}
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !showSettings) {
-        // Don't allow escape to close main banner - user must make a choice
-        return;
-      }
+// Save consent to localStorage
+function saveConsent(analytics: boolean, marketing: boolean, language: LanguageCode): void {
+  const now = new Date();
+  const expires = new Date(now);
+  expires.setMonth(expires.getMonth() + COOKIE_CONFIG.expiresMonths);
 
-      if (e.key === "Escape" && showSettings) {
-        setShowSettings(false);
-        return;
-      }
-
-      // Focus trap
-      if (e.key === "Tab" && modalRef.current) {
-        const focusableElements = modalRef.current.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        const firstElement = focusableElements[0] as HTMLElement;
-        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
-
-        if (e.shiftKey && document.activeElement === firstElement) {
-          e.preventDefault();
-          lastElement?.focus();
-        } else if (!e.shiftKey && document.activeElement === lastElement) {
-          e.preventDefault();
-          firstElement?.focus();
-        }
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isVisible, showSettings]);
-
-  // Focus first element when modal opens
-  useEffect(() => {
-    if (isVisible && firstFocusableRef.current) {
-      setTimeout(() => firstFocusableRef.current?.focus(), 100);
-    }
-  }, [isVisible]);
-
-  // Save preferences and close banner
-  const savePreferences = useCallback((prefs: CookiePreferences) => {
-    localStorage.setItem(STORAGE_KEYS.COOKIE_CONSENT, "true");
-    localStorage.setItem(STORAGE_KEYS.COOKIE_PREFERENCES, JSON.stringify(prefs));
-    setPreferences(prefs);
-    setIsVisible(false);
-
-    // Dispatch event for other parts of app to react
-    window.dispatchEvent(
-      new CustomEvent("cookieConsentChanged", { detail: prefs })
-    );
-
-    // Announce to screen readers
-    announceToScreenReader("העדפות העוגיות נשמרו");
-  }, []);
-
-  // Accept all cookies
-  const acceptAll = useCallback(() => {
-    const allEnabled: CookiePreferences = {
-      necessary: true,
-      functional: true,
-      analytics: true,
-      marketing: true,
-      advertising: true,
-    };
-    savePreferences(allEnabled);
-  }, [savePreferences]);
-
-  // Decline all (only necessary)
-  const declineAll = useCallback(() => {
-    const onlyNecessary: CookiePreferences = {
-      necessary: true,
-      functional: false,
-      analytics: false,
-      marketing: false,
-      advertising: false,
-    };
-    savePreferences(onlyNecessary);
-  }, [savePreferences]);
-
-  // Toggle individual preference
-  const togglePreference = useCallback((category: CookieCategory) => {
-    if (COOKIE_CATEGORIES[category].required) return;
-    setPreferences((prev) => ({
-      ...prev,
-      [category]: !prev[category],
-    }));
-  }, []);
-
-  // Announce to screen readers
-  const announceToScreenReader = (message: string) => {
-    const announcement = document.createElement("div");
-    announcement.setAttribute("aria-live", "polite");
-    announcement.setAttribute("aria-atomic", "true");
-    announcement.className = "sr-only";
-    announcement.textContent = message;
-    document.body.appendChild(announcement);
-    setTimeout(() => announcement.remove(), 1000);
+  const consent: ConsentData = {
+    version: COOKIE_CONFIG.consentVersion,
+    analytics,
+    marketing,
+    timestamp: now.toISOString(),
+    language,
+    expires: expires.toISOString(),
   };
 
+  localStorage.setItem(COOKIE_CONFIG.storageKey, JSON.stringify(consent));
+}
+
+// Update GTM consent mode
+function updateGTMConsent(analytics: boolean, marketing: boolean): void {
+  if (typeof window === "undefined") return;
+
+  // Initialize dataLayer if not exists
+  window.dataLayer = window.dataLayer || [];
+
+  // Define gtag function if not exists
+  if (typeof window.gtag !== "function") {
+    window.gtag = function gtag(...args: unknown[]) {
+      window.dataLayer.push(args);
+    };
+  }
+
+  // Update consent
+  window.gtag("consent", "update", {
+    analytics_storage: analytics ? "granted" : "denied",
+    ad_storage: marketing ? "granted" : "denied",
+    ad_user_data: marketing ? "granted" : "denied",
+    ad_personalization: marketing ? "granted" : "denied",
+  });
+
+  // Push event for GTM triggers
+  window.dataLayer.push({
+    event: "cookie_consent_update",
+    consent_analytics: analytics,
+    consent_marketing: marketing,
+  });
+}
+
+// =============================================================================
+// COMPONENT
+// =============================================================================
+export function CookieConsent() {
+  const [isVisible, setIsVisible] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [language, setLanguage] = useState<LanguageCode>(COOKIE_CONFIG.defaultLanguage);
+  const [analytics, setAnalytics] = useState(false);
+  const [marketing, setMarketing] = useState(false);
+
+  const t = translations[language];
+  const isRTL = RTL_LANGUAGES.includes(language);
+
+  // Initialize on mount
+  useEffect(() => {
+    const storedConsent = getStoredConsent();
+
+    if (storedConsent) {
+      // User already consented - update GTM and don't show banner
+      setLanguage(storedConsent.language);
+      setAnalytics(storedConsent.analytics);
+      setMarketing(storedConsent.marketing);
+      updateGTMConsent(storedConsent.analytics, storedConsent.marketing);
+    } else {
+      // No consent yet - show banner
+      setLanguage(detectBrowserLanguage());
+      // Small delay for smooth entrance
+      const timer = setTimeout(() => setIsVisible(true), 500);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  // Handle accept all
+  const handleAcceptAll = useCallback(() => {
+    setAnalytics(true);
+    setMarketing(true);
+    saveConsent(true, true, language);
+    updateGTMConsent(true, true);
+    setIsVisible(false);
+  }, [language]);
+
+  // Handle reject all
+  const handleRejectAll = useCallback(() => {
+    setAnalytics(false);
+    setMarketing(false);
+    saveConsent(false, false, language);
+    updateGTMConsent(false, false);
+    setIsVisible(false);
+  }, [language]);
+
+  // Handle save preferences
+  const handleSavePreferences = useCallback(() => {
+    saveConsent(analytics, marketing, language);
+    updateGTMConsent(analytics, marketing);
+    setIsVisible(false);
+  }, [analytics, marketing, language]);
+
+  // Handle language change
+  const handleLanguageChange = useCallback((lang: LanguageCode) => {
+    setLanguage(lang);
+  }, []);
+
+  // Don't render if not visible
   if (!isVisible) return null;
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center"
+      dir={isRTL ? "rtl" : "ltr"}
+      className="fixed bottom-0 left-0 right-0 z-[9999] animate-slide-up"
       role="dialog"
-      aria-modal="true"
-      aria-label="הסכמה לעוגיות"
+      aria-label="Cookie consent"
+      aria-live="polite"
     >
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+      {/* Backdrop for mobile */}
+      <div className="fixed inset-0 bg-black/20 sm:bg-transparent" />
 
-      {/* Modal */}
-      <div
-        ref={modalRef}
-        className={`relative w-full max-w-2xl mx-4 mb-4 sm:mb-0 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl overflow-hidden transform transition-all ${
-          showSettings ? "max-h-[90vh]" : ""
-        }`}
-      >
-        {!showSettings ? (
-          // Main Banner
-          <div className="p-6 sm:p-8">
-            {/* Icon and Title */}
-            <div className="flex items-start gap-4 mb-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-xl flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-blue-600 dark:text-blue-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-                  אנחנו משתמשים בעוגיות
-                </h2>
-                <p className="text-slate-600 dark:text-slate-300 mt-1">
-                  כדי לשפר את חוויית הגלישה שלך
-                </p>
-              </div>
-            </div>
-
-            {/* Description */}
-            <p className="text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
-              אתר זה משתמש בעוגיות לשיפור הביצועים, ניתוח תנועה והתאמה אישית.
-              באפשרותך לקבל את כולן, לדחות את אלו שאינן הכרחיות, או להתאים
-              אישית את ההעדפות שלך.{" "}
-              <Link
-                href="/privacy"
-                className="text-blue-600 dark:text-blue-400 hover:underline"
-              >
-                קרא את מדיניות הפרטיות המלאה
-              </Link>
-            </p>
-
-            {/* Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                ref={firstFocusableRef}
-                onClick={acceptAll}
-                className="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
-              >
-                קבל הכל
-              </button>
-              <button
-                onClick={() => setShowSettings(true)}
-                className="flex-1 py-3 px-6 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-xl transition-colors"
-              >
-                התאמה אישית
-              </button>
-              <button
-                onClick={declineAll}
-                className="flex-1 py-3 px-6 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-xl transition-colors"
-              >
-                דחה הכל
-              </button>
-            </div>
-          </div>
-        ) : (
-          // Settings Panel
-          <div className="flex flex-col max-h-[90vh]">
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-200 dark:border-slate-700">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-                הגדרות עוגיות
+      {/* Banner */}
+      <div className="relative bg-white border-t border-slate-200 shadow-2xl">
+        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 sm:py-5">
+          {/* Header Row */}
+          <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+            <div className="flex-1 min-w-0">
+              <h2 className="text-lg font-semibold text-slate-900 mb-1">
+                {t.title}
               </h2>
-              <button
-                onClick={() => setShowSettings(false)}
-                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors"
-                aria-label="חזור"
-              >
-                <Icon name="X" className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-              </button>
-            </div>
-
-            {/* Cookie Categories */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-              {(Object.keys(COOKIE_CATEGORIES) as CookieCategory[]).map((category) => {
-                const { label, description, required } = COOKIE_CATEGORIES[category];
-                const isEnabled = preferences[category];
-
-                return (
-                  <div
-                    key={category}
-                    className="flex items-start justify-between gap-4 p-4 bg-slate-50 dark:bg-slate-900 rounded-xl"
-                  >
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-slate-900 dark:text-white">
-                          {label}
-                        </span>
-                        {required && (
-                          <span className="text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full">
-                            הכרחי
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                        {description}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => togglePreference(category)}
-                      disabled={required}
-                      className={`relative flex-shrink-0 w-12 h-6 rounded-full transition-colors ${
-                        isEnabled
-                          ? "bg-blue-600"
-                          : "bg-slate-300 dark:bg-slate-600"
-                      } ${required ? "opacity-50 cursor-not-allowed" : ""}`}
-                      role="switch"
-                      aria-checked={isEnabled}
-                      aria-label={label}
-                    >
-                      <span
-                        className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                          isEnabled ? "right-1" : "left-1"
-                        }`}
-                      />
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Footer */}
-            <div className="p-4 sm:p-6 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                  onClick={() => savePreferences(preferences)}
-                  className="flex-1 py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
+              <p className="text-sm text-slate-600 leading-relaxed">
+                {t.description}{" "}
+                <Link
+                  href={COOKIE_CONFIG.privacyPolicyUrl}
+                  className="underline hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded"
+                  style={{ color: COOKIE_CONFIG.primaryColor }}
                 >
-                  שמור העדפות
+                  {t.privacyLink}
+                </Link>
+              </p>
+            </div>
+
+            {/* Language Switcher */}
+            <div className="flex gap-1 shrink-0">
+              {Object.keys(translations).map((lang) => (
+                <button
+                  key={lang}
+                  onClick={() => handleLanguageChange(lang as LanguageCode)}
+                  className={`px-2 py-1 text-xs font-medium rounded transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    language === lang
+                      ? "bg-slate-800 text-white"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  }`}
+                  aria-label={`Switch to ${translations[lang as LanguageCode].language}`}
+                  aria-pressed={language === lang}
+                >
+                  {lang.toUpperCase()}
                 </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Main Buttons */}
+          <div className="flex flex-wrap gap-2 mb-3">
+            <button
+              onClick={handleAcceptAll}
+              className="px-5 py-2.5 text-sm font-medium text-white rounded-lg transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600"
+              style={{ backgroundColor: COOKIE_CONFIG.primaryColor }}
+            >
+              {t.acceptAll}
+            </button>
+            <button
+              onClick={handleRejectAll}
+              className="px-5 py-2.5 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg transition-all hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
+            >
+              {t.rejectAll}
+            </button>
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="px-5 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg transition-all hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
+              aria-expanded={isExpanded}
+            >
+              {t.customize}
+            </button>
+          </div>
+
+          {/* Expanded Preferences Panel */}
+          {isExpanded && (
+            <div className="border-t border-slate-200 pt-4 mt-3 animate-fade-in">
+              {/* Necessary Cookies */}
+              <div className="flex items-start justify-between gap-4 py-3 border-b border-slate-100">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-medium text-slate-900">{t.necessary}</h3>
+                    <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full">
+                      {t.alwaysOn}
+                    </span>
+                  </div>
+                  <p className="text-sm text-slate-500 mt-1">{t.necessaryDesc}</p>
+                </div>
+                <div className="shrink-0">
+                  <div
+                    className="w-11 h-6 bg-green-500 rounded-full flex items-center justify-center cursor-not-allowed opacity-80"
+                    aria-disabled="true"
+                  >
+                    <div className={`w-5 h-5 bg-white rounded-full shadow ${isRTL ? "mr-0.5" : "ml-0.5"}`} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Analytics Cookies */}
+              <div className="flex items-start justify-between gap-4 py-3 border-b border-slate-100">
+                <div className="flex-1">
+                  <h3 className="font-medium text-slate-900">{t.analytics}</h3>
+                  <p className="text-sm text-slate-500 mt-1">{t.analyticsDesc}</p>
+                </div>
+                <div className="shrink-0">
+                  <button
+                    onClick={() => setAnalytics(!analytics)}
+                    className={`relative w-11 h-6 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                      analytics ? "bg-blue-600" : "bg-slate-300"
+                    }`}
+                    role="switch"
+                    aria-checked={analytics}
+                    aria-label={t.analytics}
+                  >
+                    <span
+                      className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                        analytics
+                          ? isRTL
+                            ? "right-0.5"
+                            : "left-5"
+                          : isRTL
+                          ? "left-0.5"
+                          : "left-0.5"
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+
+              {/* Marketing Cookies */}
+              <div className="flex items-start justify-between gap-4 py-3">
+                <div className="flex-1">
+                  <h3 className="font-medium text-slate-900">{t.marketing}</h3>
+                  <p className="text-sm text-slate-500 mt-1">{t.marketingDesc}</p>
+                </div>
+                <div className="shrink-0">
+                  <button
+                    onClick={() => setMarketing(!marketing)}
+                    className={`relative w-11 h-6 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                      marketing ? "bg-blue-600" : "bg-slate-300"
+                    }`}
+                    role="switch"
+                    aria-checked={marketing}
+                    aria-label={t.marketing}
+                  >
+                    <span
+                      className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                        marketing
+                          ? isRTL
+                            ? "right-0.5"
+                            : "left-5"
+                          : isRTL
+                          ? "left-0.5"
+                          : "left-0.5"
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+
+              {/* Save Button */}
+              <div className="mt-4 pt-3 border-t border-slate-200">
                 <button
-                  onClick={acceptAll}
-                  className="flex-1 py-3 px-6 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold rounded-xl transition-colors"
+                  onClick={handleSavePreferences}
+                  className="w-full sm:w-auto px-6 py-2.5 text-sm font-medium text-white rounded-lg transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600"
+                  style={{ backgroundColor: COOKIE_CONFIG.primaryColor }}
                 >
-                  קבל הכל
+                  {t.savePreferences}
                 </button>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
 export default CookieConsent;
+
+// =============================================================================
+// GTM DEFAULT CONSENT SCRIPT
+// =============================================================================
+// Add this to your <head> BEFORE the GTM script:
+//
+// <script>
+//   window.dataLayer = window.dataLayer || [];
+//   function gtag(){dataLayer.push(arguments);}
+//   gtag('consent', 'default', {
+//     analytics_storage: 'denied',
+//     ad_storage: 'denied',
+//     ad_user_data: 'denied',
+//     ad_personalization: 'denied',
+//     wait_for_update: 2000
+//   });
+// </script>
+// <!-- Google Tag Manager -->
+// <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+// new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+// j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+// 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+// })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>

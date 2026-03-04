@@ -1,0 +1,227 @@
+/**
+ * FLOATING SOCIAL & CONTACT WIDGET BAR
+ * A zero-dependency widget that displays social/contact buttons
+ *
+ * Usage: Add these two lines to your HTML:
+ *   <link rel="stylesheet" href="social-widget/social-widget.css">
+ *   <script src="social-widget/social-widget.js" defer></script>
+ *
+ * Then edit the SOCIAL_CONFIG object at the top of social-widget.js
+ */
+
+/* ============================================
+   CONTAINER
+   ============================================ */
+.social-widget-container {
+  position: fixed;
+  bottom: 24px;
+  left: 20px;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+  z-index: 9998;
+  pointer-events: none;
+}
+
+/* ============================================
+   BUTTON BASE STYLES
+   ============================================ */
+.social-widget-btn {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.20);
+  text-decoration: none;
+  pointer-events: auto;
+  transition: transform 0.2s ease,
+              box-shadow 0.2s ease,
+              outline 0.15s ease;
+  opacity: 0;
+  transform: translateX(-80px);
+}
+
+/* Entrance animation */
+.social-widget-btn.animate-in {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Hover state */
+.social-widget-btn:hover {
+  transform: scale(1.12) translateX(0);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Focus visible state */
+.social-widget-btn:focus-visible {
+  outline: 3px solid;
+  outline-offset: 3px;
+}
+
+/* Active/pressed state */
+.social-widget-btn:active {
+  transform: scale(1.05) translateX(0);
+}
+
+/* ============================================
+   SVG ICON STYLES
+   ============================================ */
+.social-widget-btn svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* ============================================
+   TOOLTIP STYLES
+   ============================================ */
+.social-widget-tooltip {
+  position: absolute;
+  left: 58px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1e293b;
+  color: #fff;
+  font-size: 0.75rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 1;
+}
+
+/* Show tooltip on hover/focus */
+.social-widget-btn:hover .social-widget-tooltip,
+.social-widget-btn:focus .social-widget-tooltip {
+  opacity: 1;
+}
+
+/* ============================================
+   BUTTON-SPECIFIC STYLES
+   ============================================ */
+
+/* PHONE BUTTON */
+.social-widget-btn--phone {
+  background-color: #25D366;
+  color: #fff;
+}
+.social-widget-btn--phone:focus-visible {
+  outline-color: #25D366;
+}
+.social-widget-btn--phone svg {
+  fill: #fff;
+}
+
+/* WHATSAPP BUTTON */
+.social-widget-btn--whatsapp {
+  background-color: #25D366;
+  color: #fff;
+}
+.social-widget-btn--whatsapp:focus-visible {
+  outline-color: #25D366;
+}
+.social-widget-btn--whatsapp svg {
+  fill: #fff;
+}
+
+/* INSTAGRAM BUTTON */
+.social-widget-btn--instagram {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  color: #fff;
+}
+.social-widget-btn--instagram:focus-visible {
+  outline-color: #dc2743;
+}
+.social-widget-btn--instagram svg {
+  fill: #fff;
+}
+
+/* FACEBOOK BUTTON */
+.social-widget-btn--facebook {
+  background-color: #1877F2;
+  color: #fff;
+}
+.social-widget-btn--facebook:focus-visible {
+  outline-color: #1877F2;
+}
+.social-widget-btn--facebook svg {
+  fill: #fff;
+}
+
+/* GOOGLE BUTTON */
+.social-widget-btn--google {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+.social-widget-btn--google:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.20);
+}
+.social-widget-btn--google:focus-visible {
+  outline-color: #4285F4;
+}
+
+/* ============================================
+   BRAND COLOR ACCENT RING (applied via JS)
+   ============================================ */
+.social-widget-btn.has-brand-accent:hover {
+  box-shadow: 0 0 0 2px var(--brand-accent-color, #333),
+              0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* ============================================
+   REDUCED MOTION SUPPORT
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .social-widget-btn {
+    transition: none;
+  }
+
+  .social-widget-btn.animate-in {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .social-widget-tooltip {
+    transition: none;
+  }
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+@media (max-width: 480px) {
+  .social-widget-container {
+    bottom: 16px;
+    left: 12px;
+    gap: 8px;
+  }
+
+  .social-widget-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .social-widget-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .social-widget-tooltip {
+    left: 52px;
+    font-size: 0.7rem;
+  }
+}

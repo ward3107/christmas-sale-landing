@@ -65,16 +65,16 @@ export function About() {
             <div className="flex flex-wrap gap-6 text-slate-600">
               <a
                 href={`tel:${contact.phone.replace(/-/g, "")}`}
-                className="inline-flex items-center gap-2 hover:text-blue-600 transition-colors"
+                className="inline-flex items-center gap-2 hover:text-blue-600 hover:underline transition-colors"
               >
-                <Icon name="Phone" className="w-5 h-5 text-blue-600" />
+                <Icon name="Phone" className="w-5 h-5 text-blue-600" aria-hidden="true" />
                 <span>{contact.phone}</span>
               </a>
               <a
                 href={`mailto:${contact.email}`}
-                className="inline-flex items-center gap-2 hover:text-blue-600 transition-colors"
+                className="inline-flex items-center gap-2 hover:text-blue-600 hover:underline transition-colors"
               >
-                <Icon name="Mail" className="w-5 h-5 text-blue-600" />
+                <Icon name="Mail" className="w-5 h-5 text-blue-600" aria-hidden="true" />
                 <span>{contact.email}</span>
               </a>
             </div>
@@ -118,8 +118,8 @@ export function About() {
             {/* Address Card */}
             <div className="mt-6 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-8 text-white">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                  <Icon name="MapPin" className="w-6 h-6" />
+                <div className="flex-shrink-0 w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center" aria-hidden="true">
+                  <Icon name="MapPin" className="w-6 h-6" aria-hidden="true" />
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold mb-1">המשרד שלנו</h3>

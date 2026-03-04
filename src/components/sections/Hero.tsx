@@ -100,6 +100,7 @@ export function Hero() {
               <Icon
                 name="ArrowRight"
                 className="w-5 h-5 transition-transform group-hover:-translate-x-1 rtl:rotate-180 rtl:group-hover:translate-x-1"
+                aria-hidden="true"
               />
             </a>
 
@@ -108,7 +109,7 @@ export function Hero() {
               href={`tel:${contact.phone.replace(/-/g, "")}`}
               className="inline-flex items-center gap-3 px-8 py-4 bg-white/10 hover:bg-white/20 text-white text-lg font-semibold rounded-full backdrop-blur-sm border border-white/20 transition-all duration-200 hover:scale-105"
             >
-              <Icon name="Phone" className="w-5 h-5" />
+              <Icon name="Phone" className="w-5 h-5" aria-hidden="true" />
               <span>{contact.phone}</span>
             </a>
           </div>
@@ -123,15 +124,15 @@ export function Hero() {
           >
             <div className="flex flex-wrap items-center justify-center gap-8 text-slate-400">
               <div className="flex items-center gap-2">
-                <Icon name="Shield" className="w-5 h-5 text-blue-400" />
+                <Icon name="Shield" className="w-5 h-5 text-blue-400" aria-hidden="true" />
                 <span className="text-sm">אבטחת מידע מלאה</span>
               </div>
               <div className="flex items-center gap-2">
-                <Icon name="Clock" className="w-5 h-5 text-blue-400" />
+                <Icon name="Clock" className="w-5 h-5 text-blue-400" aria-hidden="true" />
                 <span className="text-sm">מענה תוך 24 שעות</span>
               </div>
               <div className="flex items-center gap-2">
-                <Icon name="Users" className="w-5 h-5 text-blue-400" />
+                <Icon name="Users" className="w-5 h-5 text-blue-400" aria-hidden="true" />
                 <span className="text-sm">500+ לקוחות מרוצים</span>
               </div>
             </div>
@@ -147,7 +148,7 @@ export function Hero() {
           aria-label="גלול למטה"
         >
           <span className="text-xs">גלול למטה</span>
-          <Icon name="ChevronDown" className="w-6 h-6" />
+          <Icon name="ChevronDown" className="w-6 h-6" aria-hidden="true" />
         </a>
       </div>
 
