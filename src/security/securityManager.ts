@@ -311,4 +311,6 @@ class SecurityManager {
 // Export singleton instance
 export const securityManager = SecurityManager.getInstance();
 
+// Export class for testing
+export { SecurityManager };
 export default SecurityManager;

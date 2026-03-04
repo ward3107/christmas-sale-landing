@@ -5,7 +5,7 @@
 // RTL support for Hebrew content.
 // =============================================================================
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Rubik } from "next/font/google";
 import { siteConfig } from "@/config/site-config";
 import { SecurityProvider } from "@/components/providers/SecurityProvider";
@@ -23,6 +23,14 @@ const rubik = Rubik({
   variable: "--font-rubik",
 });
 
+// Viewport configuration (Next.js 15+)
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+};
+
 // Metadata from config
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -30,12 +38,6 @@ export const metadata: Metadata = {
   description: siteConfig.metadata.description,
   keywords: siteConfig.metadata.keywords,
   authors: [{ name: "Law Firm Template" }],
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-  },
   alternates: {
     canonical: "/",
   },

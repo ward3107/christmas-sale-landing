@@ -155,4 +155,42 @@ export function getCSPHeaders(): string {
   return buildCSPString(CSP_DIRECTIVES);
 }
 
+/**
+ * Get CSP Report-Only headers for safe monitoring
+ * Use this first to gather violations without blocking resources
+ */
+export function getCSPReportOnlyHeaders(): string {
+  const REPORT_ONLY_DIRECTIVES: Record<string, string[]> = {
+    ...CSP_DIRECTIVES,
+    // Allow more sources during report-only phase to detect actual usage
+    "script-src": [
+      "'self'",
+      "'unsafe-inline'",
+      "'unsafe-eval'",
+      "https:", // Allow all HTTPS scripts during monitoring
+    ],
+    "style-src": [
+      "'self'",
+      "'unsafe-inline'",
+      "https:", // Allow all HTTPS styles
+    ],
+    "connect-src": [
+      "'self'",
+      "https:", // Allow all HTTPS connections during monitoring
+    ],
+  };
+
+  return buildCSPString(REPORT_ONLY_DIRECTIVES);
+}
+
+/**
+ * Get report-to endpoint URL for CSP violation reporting
+ */
+export function getReportToUrl(): string {
+  // Default: report to console (handled by securitypolicyviolation event)
+  // For production, set up an endpoint:
+  // return process.env.NEXT_PUBLIC_CSP_REPORT_ENDPOINT || '/api/csp-report';
+  return '/api/csp-report'; // Create this API route to collect reports
+}
+
 export default initializeCSP;
