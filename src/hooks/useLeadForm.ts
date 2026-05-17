@@ -8,6 +8,8 @@
 // =============================================================================
 
 import { useState, useCallback } from "react";
+import { leadSchema } from "@/lib/validation";
+import { trackEvent } from "@/lib/analytics";
 
 // Types for the lead data
 export interface LeadData {
@@ -75,15 +77,15 @@ export function useLeadForm(): UseLeadFormReturn {
     });
 
     try {
-      // Validate required fields on client side (quick check before API call)
-      if (!data.name?.trim() || !data.phone?.trim() || !data.email?.trim()) {
-        throw new Error("נא למלא את כל השדות הנדרשים");
-      }
-
-      // Basic email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(data.email)) {
-        throw new Error("כתובת אימייל לא תקינה");
+      // Shared schema validation (matches server)
+      const parsed = leadSchema.safeParse({
+        ...data,
+        termsAccepted: data.termsAccepted ?? false,
+      });
+      if (!parsed.success) {
+        throw new Error(
+          parsed.error.issues[0]?.message ?? "נא למלא את כל השדות הנדרשים"
+        );
       }
 
       // Obtain CSRF token (sets cookie + returns matching header value)
@@ -106,7 +108,11 @@ export function useLeadForm(): UseLeadFormReturn {
         throw new Error(result.message || "אירעה שגיאה בשליחת הטופס. נא לנסות שוב.");
       }
 
-      // Success state
+      trackEvent("form_submit", {
+        form: "contact",
+        marketing_consent: !!data.marketingConsent,
+      });
+
       setState({
         isLoading: false,
         isSuccess: true,
@@ -116,11 +122,12 @@ export function useLeadForm(): UseLeadFormReturn {
 
       return true;
     } catch (error) {
-      // Error state
       const errorMessage =
         error instanceof Error
           ? error.message
           : "אירעה שגיאה בשליחת הטופס. נא לנסות שוב.";
+
+      trackEvent("form_error", { form: "contact", message: errorMessage });
 
       setState({
         isLoading: false,

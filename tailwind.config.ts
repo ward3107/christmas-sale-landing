@@ -15,7 +15,39 @@ const config: Config = {
         sans: ["var(--font-rubik)", "system-ui", "sans-serif"],
       },
       colors: {
-        // Custom color palette can be extended here
+        // Brand tokens — use these instead of raw `blue-*` for new code.
+        // Keeps the existing blue palette for backward compatibility.
+        brand: {
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
+          400: "#60a5fa",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
+          800: "#1e40af",
+          900: "#1e3a8a",
+          950: "#172554",
+        },
+        // Gold accent — for star ratings, premium badges, awards.
+        gold: {
+          50: "#fdf9ef",
+          100: "#faf0d4",
+          200: "#f3dfa3",
+          300: "#ecc66b",
+          400: "#e3ac41",
+          500: "#d4922a",
+          600: "#b87420",
+          700: "#94571f",
+          800: "#7a4521",
+          900: "#673a1d",
+        },
+        ink: {
+          DEFAULT: "#0f172a",
+          muted: "#475569",
+          subtle: "#64748b",
+        },
         primary: {
           50: "#eff6ff",
           100: "#dbeafe",

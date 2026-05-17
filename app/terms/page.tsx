@@ -9,6 +9,14 @@ import { siteConfig } from "@/config/site-config";
 export const metadata: Metadata = {
   title: "תקנון ותנאי שימוש | " + siteConfig.metadata.title,
   description: "תקנון ותנאי השימוש באתר " + siteConfig.metadata.title,
+  alternates: { canonical: "/terms" },
+  openGraph: {
+    title: "תקנון ותנאי שימוש",
+    description: "תקנון ותנאי השימוש באתר.",
+    type: "article",
+    locale: "he_IL",
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function TermsPage() {
