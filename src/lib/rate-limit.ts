@@ -1,6 +1,10 @@
 /**
- * Rate limiting utilities for Next.js API routes
- * Edge-compatible rate limiting using IP-based tracking
+ * Rate limiting utilities for Next.js API routes.
+ *
+ * Uses Upstash Redis via REST when UPSTASH_REDIS_REST_URL / _TOKEN are set
+ * (durable across serverless instances). Falls back to a per-instance in-memory
+ * Map otherwise — fine for local dev, but in production multiple instances
+ * each enforce the limit independently, so always configure Upstash there.
  */
 
 interface RateLimitEntry {
@@ -9,6 +13,10 @@ interface RateLimitEntry {
 }
 
 const rateLimitStore = new Map<string, RateLimitEntry>();
+
+const UPSTASH_URL = process.env.UPSTASH_REDIS_REST_URL;
+const UPSTASH_TOKEN = process.env.UPSTASH_REDIS_REST_TOKEN;
+const useUpstash = Boolean(UPSTASH_URL && UPSTASH_TOKEN);
 
 // Cleanup old entries every minute
 if (typeof setInterval !== 'undefined') {
@@ -39,50 +47,90 @@ export interface RateLimitConfig {
   window: number;
 }
 
+export interface RateLimitResult {
+  allowed: boolean;
+  remaining: number;
+  resetAt: number;
+}
+
 /**
- * Check if a request should be rate limited
- * Returns true if the request should be allowed, false if rate limit exceeded
+ * Synchronous in-memory rate limiter. Per-instance only.
+ * Kept for backward compatibility — prefer `checkRateLimitAsync` for new code.
  */
 export function checkRateLimit(
   identifier: string,
   config: RateLimitConfig = { requests: 10, window: 60 }
-): { allowed: boolean; remaining: number; resetAt: number } {
+): RateLimitResult {
   const now = Date.now();
   const windowMs = config.window * 1000;
 
   let entry = rateLimitStore.get(identifier);
 
-  // Create or reset entry if window has expired
   if (!entry || entry.resetAt < now) {
-    entry = {
-      count: 1,
-      resetAt: now + windowMs,
-    };
+    entry = { count: 1, resetAt: now + windowMs };
     rateLimitStore.set(identifier, entry);
-
-    return {
-      allowed: true,
-      remaining: config.requests - 1,
-      resetAt: entry.resetAt,
-    };
+    return { allowed: true, remaining: config.requests - 1, resetAt: entry.resetAt };
   }
 
-  // Increment count within window
   entry.count++;
 
   if (entry.count > config.requests) {
-    return {
-      allowed: false,
-      remaining: 0,
-      resetAt: entry.resetAt,
-    };
+    return { allowed: false, remaining: 0, resetAt: entry.resetAt };
   }
 
-  return {
-    allowed: true,
-    remaining: config.requests - entry.count,
-    resetAt: entry.resetAt,
-  };
+  return { allowed: true, remaining: config.requests - entry.count, resetAt: entry.resetAt };
+}
+
+async function checkRateLimitUpstash(
+  identifier: string,
+  config: RateLimitConfig
+): Promise<RateLimitResult> {
+  const key = `ratelimit:${identifier}:${config.window}:${config.requests}`;
+  const now = Date.now();
+
+  // Atomic INCR + EXPIRE (NX = only if no TTL set yet) via pipeline.
+  const res = await fetch(`${UPSTASH_URL}/pipeline`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${UPSTASH_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify([
+      ["INCR", key],
+      ["EXPIRE", key, String(config.window), "NX"],
+      ["PTTL", key],
+    ]),
+    cache: "no-store",
+  });
+
+  if (!res.ok) throw new Error(`Upstash rate-limit failed: ${res.status}`);
+
+  const data = (await res.json()) as Array<{ result: number }>;
+  const count = Number(data[0]?.result ?? 0);
+  const pttl = Number(data[2]?.result ?? config.window * 1000);
+  const resetAt = now + (pttl > 0 ? pttl : config.window * 1000);
+
+  if (count > config.requests) {
+    return { allowed: false, remaining: 0, resetAt };
+  }
+  return { allowed: true, remaining: Math.max(0, config.requests - count), resetAt };
+}
+
+/**
+ * Durable rate-limit check. Uses Upstash when configured, in-memory otherwise.
+ */
+export async function checkRateLimitAsync(
+  identifier: string,
+  config: RateLimitConfig = { requests: 10, window: 60 }
+): Promise<RateLimitResult> {
+  if (useUpstash) {
+    try {
+      return await checkRateLimitUpstash(identifier, config);
+    } catch (err) {
+      console.warn("[rate-limit] Upstash unavailable, falling back to in-memory:", err);
+    }
+  }
+  return checkRateLimit(identifier, config);
 }
 
 /**

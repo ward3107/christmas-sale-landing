@@ -10,7 +10,8 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { checkRateLimit, getClientIp, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit";
+import { checkRateLimitAsync, getClientIp, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit";
+import { verifyCsrfToken, verifyOrigin } from "@/lib/csrf";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import emailjs from "@emailjs/browser";
@@ -94,9 +95,25 @@ function detectXSS(input: string): boolean {
  */
 export async function POST(request: NextRequest): Promise<NextResponse<ContactResponse>> {
   try {
-    // 1. Rate limiting check
+    // 1a. Origin check — blocks cross-origin form posts
+    if (!verifyOrigin(request)) {
+      return NextResponse.json(
+        { success: false, message: "Forbidden", error: "invalid_origin" },
+        { status: 403 }
+      );
+    }
+
+    // 1b. CSRF double-submit token check
+    if (!verifyCsrfToken(request)) {
+      return NextResponse.json(
+        { success: false, message: "Forbidden", error: "invalid_csrf" },
+        { status: 403 }
+      );
+    }
+
+    // 1c. Rate limiting check (durable via Upstash when configured)
     const clientIp = getClientIp(request);
-    const rateLimitResult = checkRateLimit(
+    const rateLimitResult = await checkRateLimitAsync(
       clientIp,
       RATE_LIMIT_CONFIGS.contactForm
     );
@@ -294,15 +311,23 @@ export async function POST(request: NextRequest): Promise<NextResponse<ContactRe
 }
 
 /**
- * OPTIONS handler for CORS preflight
+ * OPTIONS handler for CORS preflight.
+ * Echoes Origin only if it's in the allowlist — never wildcard.
  */
-export async function OPTIONS() {
+export async function OPTIONS(request: NextRequest) {
+  const { getAllowedOrigins } = await import("@/lib/csrf");
+  const origin = request.headers.get("origin");
+  const allowed = getAllowedOrigins();
+  const allowOrigin = origin && allowed.includes(origin) ? origin : "";
+
   return new NextResponse(null, {
-    status: 200,
+    status: 204,
     headers: {
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": allowOrigin,
       "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Headers": "Content-Type, X-CSRF-Token",
+      "Access-Control-Allow-Credentials": "true",
+      Vary: "Origin",
     },
   });
 }

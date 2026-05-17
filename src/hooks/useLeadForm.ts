@@ -33,6 +33,18 @@ export interface UseLeadFormReturn extends LeadFormState {
 }
 
 const API_ENDPOINT = "/api/contact";
+const CSRF_ENDPOINT = "/api/csrf";
+
+async function fetchCsrfToken(): Promise<string> {
+  const res = await fetch(CSRF_ENDPOINT, {
+    method: "GET",
+    credentials: "same-origin",
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error("Failed to obtain CSRF token");
+  const { token } = (await res.json()) as { token: string };
+  return token;
+}
 
 export function useLeadForm(): UseLeadFormReturn {
   const [state, setState] = useState<LeadFormState>({
@@ -74,12 +86,17 @@ export function useLeadForm(): UseLeadFormReturn {
         throw new Error("כתובת אימייל לא תקינה");
       }
 
+      // Obtain CSRF token (sets cookie + returns matching header value)
+      const csrfToken = await fetchCsrfToken();
+
       // Call the secure API endpoint
       const response = await fetch(API_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
         },
+        credentials: "same-origin",
         body: JSON.stringify(data),
       });
 
