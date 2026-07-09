@@ -1,7 +1,7 @@
 {
   "name": "master-landing-page-template",
   "version": "1.0.0",
-  "description": "Production-ready landing page template with Next.js 14, Tailwind CSS, and Firebase",
+  "description": "Production-ready landing page template with Next.js 15, Tailwind CSS, and Firebase",
   "private": true,
   "scripts": {
     "dev": "next dev",

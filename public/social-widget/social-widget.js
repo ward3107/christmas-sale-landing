@@ -12,8 +12,8 @@
  * Set any value to null to hide that button
  */
 const SOCIAL_CONFIG = {
-  phone:     '+972534260632',           // Phone number for call button
-  whatsapp:  '972534260632',            // WhatsApp number (with country code)
+  phone:     '+972500000000',           // Phone number for call button
+  whatsapp:  '972500000000',            // WhatsApp number (with country code)
   instagram: null,                      // Instagram handle (without @) - set to null to hide
   facebook:  null,                      // Facebook page name/ID - set to null to hide
   google:    null,                      // Google Place ID from g.page URL - set to null to hide

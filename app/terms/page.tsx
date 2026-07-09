@@ -200,9 +200,9 @@ export default function TermsPage() {
             <h2>13. יצירת קשר</h2>
             <p>לשאלות או הבהרות בנוגע לתקנון זה, ניתן לפנות אלינו:</p>
             <ul>
-              <li>דוא״ל: <a href="mailto:wasya92@gmail.com" className="text-blue-600 hover:underline">wasya92@gmail.com</a></li>
-              <li>טלפון: 053-4260632</li>
-              <li>כתובת: מגדלי ב.ס.ר 4, קומה 25, רמת גן</li>
+              <li>דוא״ל: <a href="mailto:info@example.com" className="text-blue-600 hover:underline">info@example.com</a></li>
+              <li>טלפון: 050-000-0000</li>
+              <li>כתובת: רחוב הדוגמה 1, תל אביב</li>
             </ul>
 
           </div>

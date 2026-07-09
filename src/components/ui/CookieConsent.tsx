@@ -30,7 +30,7 @@ declare global {
 // =============================================================================
 const COOKIE_CONFIG = {
   privacyPolicyUrl: "/privacy",
-  contactEmail: "wasya92@gmail.com",
+  contactEmail: "info@example.com",
   primaryColor: "#2563eb", // blue-600
   storageKey: "cookieConsent",
   consentVersion: "1.0",

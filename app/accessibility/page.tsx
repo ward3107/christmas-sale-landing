@@ -123,18 +123,18 @@ export default function AccessibilityPage() {
                 </li>
                 <li>
                   <strong>טלפון:</strong>{" "}
-                  <a href="tel:0534260632" className="text-blue-600 hover:underline">
-                    053-4260632
+                  <a href="tel:0500000000" className="text-blue-600 hover:underline">
+                    050-000-0000
                   </a>
                 </li>
                 <li>
                   <strong>דוא״ל:</strong>{" "}
-                  <a href="mailto:wasya92@gmail.com" className="text-blue-600 hover:underline">
-                    wasya92@gmail.com
+                  <a href="mailto:info@example.com" className="text-blue-600 hover:underline">
+                    info@example.com
                   </a>
                 </li>
                 <li>
-                  <strong>כתובת למשלוח דואר:</strong> מגדלי ב.ס.ר 4, קומה 25, רמת גן
+                  <strong>כתובת למשלוח דואר:</strong> רחוב הדוגמה 1, תל אביב
                 </li>
               </ul>
               <p className="text-slate-600 mt-4 text-sm">
