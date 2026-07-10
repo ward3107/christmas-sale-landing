@@ -14,7 +14,7 @@ npm run type-check   # TypeScript type checking
 
 ## Architecture
 
-This is a Next.js 14 landing page template for a Hebrew law firm, using the App Router with RTL support.
+This is a Next.js 15 landing page template for a Hebrew law firm, using the App Router with RTL support.
 
 ### Data-Driven Content
 
