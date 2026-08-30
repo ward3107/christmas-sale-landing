@@ -38,6 +38,8 @@ import {
   Linkedin,
   Twitter,
   Instagram,
+  Award,
+  Sparkles,
 } from "lucide-react";
 import { FC } from "react";
 
@@ -74,6 +76,8 @@ const iconMap: Record<string, FC<LucideProps>> = {
   Linkedin,
   Twitter,
   Instagram,
+  Award,
+  Sparkles,
   // Alias for backward compatibility
   Handshake: Users,
 };
@@ -126,6 +130,8 @@ export {
   Linkedin,
   Twitter,
   Instagram,
+  Award,
+  Sparkles,
 };
 
 export default Icon;

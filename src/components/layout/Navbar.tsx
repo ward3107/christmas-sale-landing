@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { siteConfig } from "@/config/site-config";
 import { Icon } from "@/components/ui/Icon";
+import { trackEvent } from "@/lib/analytics";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -87,6 +88,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-4">
             <a
               href={`tel:${siteConfig.contact.phone.replace(/-/g, "")}`}
+              onClick={() => trackEvent("phone_click", { source: "navbar" })}
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-full transition-all duration-200 shadow-lg shadow-blue-600/25 hover:shadow-blue-600/40 hover:scale-105"
             >
               <Icon name="Phone" className="w-4 h-4" aria-hidden="true" />
@@ -131,6 +133,7 @@ export function Navbar() {
             ))}
             <a
               href={`tel:${siteConfig.contact.phone.replace(/-/g, "")}`}
+              onClick={() => trackEvent("phone_click", { source: "navbar_mobile" })}
               className="flex items-center justify-center gap-2 mt-4 py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-full transition-colors"
             >
               <Icon name="Phone" className="w-4 h-4" aria-hidden="true" />

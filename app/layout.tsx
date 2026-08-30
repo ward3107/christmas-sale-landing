@@ -49,20 +49,12 @@ export const metadata: Metadata = {
     locale: "he_IL",
     url: siteUrl,
     siteName: "משרד עורכי דין מוביל",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "משרד עורכי דין מוביל - עורך דין מסחרי לעסקים",
-      },
-    ],
+    // image is supplied by app/opengraph-image.tsx (dynamic next/og generation)
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.metadata.title,
     description: siteConfig.metadata.description,
-    images: ["/og-image.jpg"],
   },
   robots: {
     index: true,

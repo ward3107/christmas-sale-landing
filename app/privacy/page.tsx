@@ -13,9 +13,15 @@ export const metadata: Metadata = {
   title: "מדיניות פרטיות | משרד עורכי דין מוביל",
   description:
     "מדיניות הפרטיות שלנו בהתאם לחוק הגנת הפרטיות (תיקון 13) והנחיות רשות הפרטיות.",
-  alternates: {
-    canonical: "/privacy",
+  alternates: { canonical: "/privacy" },
+  openGraph: {
+    title: "מדיניות פרטיות",
+    description:
+      "מדיניות הפרטיות בהתאם לחוק הגנת הפרטיות הישראלי (תיקון 13).",
+    type: "article",
+    locale: "he_IL",
   },
+  robots: { index: true, follow: true },
 };
 
 export default function PrivacyPage() {
