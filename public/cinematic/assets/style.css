@@ -330,6 +330,9 @@ p{margin:0}
 .hero.is-static .cap[data-band="1"],
 .hero.is-static .cap[data-band="2"]{display:none}
 .hero.is-static .cap--settle .cap__settle-title{display:none} /* keep one H1 */
+/* Mobile/touch autoplay: play the looping video over the poster still (which
+   stays behind as the placeholder and fades out as the video becomes ready). */
+.hero.is-static.is-playing .hero__video{display:block}
 
 @media (prefers-reduced-motion:reduce){
   .js [data-reveal]{opacity:1!important;transform:none!important}

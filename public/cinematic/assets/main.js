@@ -32,13 +32,35 @@
     if (loader) loader.classList.add("is-hidden");
   }
 
-  var STATIC = reduceMotion || smallOrTouch || fileProto;
-
-  /* ---------------- Static hero (mobile / reduced motion / file://) -------- */
+  /* ---------------- Static hero (reduced motion / file://) ---------------- */
   function goStatic() {
     if (hero) hero.classList.add("is-static");
     // On the static hero, only band 0 (title) + settle show; CSS handles it.
     caps.forEach(function (c) { c.classList.add("is-active"); });
+    hideLoader();
+  }
+
+  /* ---------------- Mobile / touch: autoplay the hero video in a loop ------
+     Scroll-scrubbing is unreliable on phones, so instead of a still-only hero
+     the video plays as a muted, looping, inline background over the poster. */
+  function goStaticVideo() {
+    if (hero) hero.classList.add("is-static", "is-playing");
+    caps.forEach(function (c) { c.classList.add("is-active"); });
+    if (!video) { hideLoader(); return; }
+
+    var canMp4 = !!video.canPlayType &&
+      video.canPlayType('video/mp4; codecs="avc1.42E01E"') !== "";
+    video.src = canMp4 ? VIDEO_SRC : "/cinematic/assets/hero.webm";
+    video.loop = true;
+    video.muted = true;                 // required for inline autoplay on iOS/Android
+    video.setAttribute("playsinline", "");
+    video.addEventListener("loadeddata", function () { video.classList.add("is-ready"); });
+    // If the video can't load or autoplay is blocked, drop back to the poster still.
+    video.addEventListener("error", function () { if (hero) hero.classList.remove("is-playing"); });
+    var pr = video.play();
+    if (pr && pr.catch) {
+      pr.catch(function () { if (hero) hero.classList.remove("is-playing"); });
+    }
     hideLoader();
   }
 
@@ -144,8 +166,13 @@
   }
 
   if (hero) {
-    if (STATIC) goStatic();
-    else initScrub();
+    if (reduceMotion || fileProto) {
+      goStatic();          // respect reduced motion; file:// can't stream the video
+    } else if (smallOrTouch) {
+      goStaticVideo();     // phones/touch: autoplay the looping video
+    } else {
+      initScrub();         // desktop: scroll-scrub the video
+    }
   }
 
   /* ---------------- Nav: scrolled state + mobile menu --------------------- */
