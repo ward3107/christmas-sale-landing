@@ -32,7 +32,9 @@ const nextConfig = {
       "img-src 'self' data: blob: https:",
       "font-src 'self' data: https://fonts.gstatic.com",
       "connect-src 'self' https://firestore.googleapis.com https://firebase.googleapis.com https://identitytoolkit.googleapis.com https://www.google-analytics.com https://api.emailjs.com",
-      "media-src 'self'",
+      // blob: allows the cinematic hero video, which is streamed via XHR and played
+      // from an object URL (URL.createObjectURL).
+      "media-src 'self' blob:",
       "object-src 'none'",
       "frame-src 'none'",
       "frame-ancestors 'none'",
@@ -50,6 +52,7 @@ const nextConfig = {
       "img-src 'self' data: blob: https:",
       "font-src 'self' data: https:",
       "connect-src 'self' ws: https:",
+      "media-src 'self' blob:",
       "object-src 'none'",
       "frame-ancestors 'none'",
       "base-uri 'self'",

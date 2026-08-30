@@ -1,0 +1,39 @@
+# Netlify configuration.
+#
+# Build settings are managed in the Netlify UI (build command, publish dir and
+# the Next.js Runtime plugin); this file only adds a redirect and headers, and
+# intentionally omits [build]/[[plugins]] so those UI settings are preserved.
+
+# Serve the cinematic landing page (public/cinematic/index.html) at the site
+# root. `force = true` makes this rewrite win over the Next.js handler for "/",
+# and status 200 keeps the address bar on "/" (a rewrite, not a redirect).
+# The page's own assets live under /cinematic/assets/ and are unaffected.
+[[redirects]]
+  from = "/"
+  to = "/cinematic/index.html"
+  status = 200
+  force = true
+
+# Security headers for the cinematic page. It is served as a static file by the
+# CDN, so the Next.js next.config.js headers() (which cover server-rendered
+# routes) do not apply here — these restore the equivalent protections for the
+# homepage and the /cinematic/ page. The CSP is tailored to exactly what the
+# page loads: its own assets, Google Fonts, an inline bootstrap script, and the
+# hero video (streamed via XHR and played from a blob: object URL).
+[[headers]]
+  for = "/"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+
+[[headers]]
+  for = "/cinematic/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; media-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
