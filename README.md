@@ -2,6 +2,8 @@
 
 A production-ready, fully responsive landing page template for a Hebrew / RTL commercial law firm, built with Next.js 15 (App Router), Tailwind CSS, and Firebase. All content is data-driven from a single config file, so you can launch a customized site in minutes without touching component code.
 
+**Live demo:** https://lawofice.netlify.app/
+
 ## Features
 
 - **Next.js 15 App Router** — modern React server components, fast builds, SEO-friendly.
