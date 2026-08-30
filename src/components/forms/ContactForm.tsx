@@ -404,6 +404,25 @@ export function ContactForm() {
                     )}
                   </button>
 
+                  {/* Trust Badges — directly under the CTA */}
+                  <ul
+                    className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-slate-600"
+                    aria-label="התחייבויות השירות"
+                  >
+                    <li className="inline-flex items-center gap-1.5">
+                      <Icon name="ShieldCheck" className="w-4 h-4 text-emerald-600" aria-hidden="true" />
+                      <span>100% סודיות</span>
+                    </li>
+                    <li className="inline-flex items-center gap-1.5">
+                      <Icon name="Clock" className="w-4 h-4 text-blue-600" aria-hidden="true" />
+                      <span>מענה תוך 24 שעות</span>
+                    </li>
+                    <li className="inline-flex items-center gap-1.5">
+                      <Icon name="Sparkles" className="w-4 h-4 text-gold-500" aria-hidden="true" />
+                      <span>ייעוץ ראשון חינם</span>
+                    </li>
+                  </ul>
+
                   {/* Privacy Notice */}
                   <p className="text-xs text-slate-500 text-center">
                     בשליחת הטופס הנך מסכים/ה ל

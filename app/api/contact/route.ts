@@ -10,7 +10,9 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { checkRateLimit, getClientIp, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit";
+import { checkRateLimitAsync, getClientIp, RATE_LIMIT_CONFIGS } from "@/lib/rate-limit";
+import { verifyCsrfToken, verifyOrigin } from "@/lib/csrf";
+import { leadSchema } from "@/lib/validation";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import emailjs from "@emailjs/browser";
@@ -25,29 +27,14 @@ if (EMAILJS_PUBLIC_KEY) {
   emailjs.init(EMAILJS_PUBLIC_KEY);
 }
 
-interface ContactFormData {
-  name: string;
-  phone: string;
-  email: string;
-  message?: string;
-  termsAccepted: boolean;
-  marketingConsent: boolean;
-  honeypot?: string; // Hidden field to catch bots
-  securityToken?: string; // CSRF-like token
-}
-
 interface ContactResponse {
   success: boolean;
   message: string;
   error?: string;
 }
 
-/**
- * Sanitize input to prevent XSS
- */
 function sanitizeInput(input: string): string {
   if (typeof input !== "string") return input;
-
   return input
     .replace(/[<>]/g, "")
     .replace(/javascript:/gi, "")
@@ -56,26 +43,6 @@ function sanitizeInput(input: string): string {
     .trim();
 }
 
-/**
- * Validate email format
- */
-function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
-
-/**
- * Validate Israeli phone number
- */
-function isValidIsraeliPhone(phone: string): boolean {
-  // Israeli phone formats: 05X-XXXXXXX, 05XXXXXXXX, +972-5X-XXXXXXX
-  const phoneRegex = /^(\+972|972|0)?[-\s]?([5][0-9])[-\s]?(\d{7})$/;
-  return phoneRegex.test(phone.replace(/[\s-]/g, ""));
-}
-
-/**
- * Detect potential XSS patterns
- */
 function detectXSS(input: string): boolean {
   const xssPatterns = [
     /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
@@ -94,9 +61,25 @@ function detectXSS(input: string): boolean {
  */
 export async function POST(request: NextRequest): Promise<NextResponse<ContactResponse>> {
   try {
-    // 1. Rate limiting check
+    // 1a. Origin check — blocks cross-origin form posts
+    if (!verifyOrigin(request)) {
+      return NextResponse.json(
+        { success: false, message: "Forbidden", error: "invalid_origin" },
+        { status: 403 }
+      );
+    }
+
+    // 1b. CSRF double-submit token check
+    if (!verifyCsrfToken(request)) {
+      return NextResponse.json(
+        { success: false, message: "Forbidden", error: "invalid_csrf" },
+        { status: 403 }
+      );
+    }
+
+    // 1c. Rate limiting check (durable via Upstash when configured)
     const clientIp = getClientIp(request);
-    const rateLimitResult = checkRateLimit(
+    const rateLimitResult = await checkRateLimitAsync(
       clientIp,
       RATE_LIMIT_CONFIGS.contactForm
     );
@@ -112,51 +95,40 @@ export async function POST(request: NextRequest): Promise<NextResponse<ContactRe
       );
     }
 
-    // 2. Parse request body
-    const body: ContactFormData = await request.json();
+    // 2. Parse + schema-validate the body in one pass (zod)
+    const raw = await request.json().catch(() => null);
+    const parsed = leadSchema.safeParse(raw);
 
-    // 3. Honeypot check - if filled, it's a bot
-    if (body.honeypot && body.honeypot.trim() !== "") {
-      // Silently reject to not alert bots
+    // 3. Honeypot — silently 200 to not alert bots
+    if (raw?.honeypot && String(raw.honeypot).trim() !== "") {
       return NextResponse.json(
         { success: true, message: "Thank you for your message." },
         { status: 200 }
       );
     }
 
-    // 4. Validate required fields
-    const { name, phone, email, message, termsAccepted } = body;
-
-    if (!name?.trim() || !phone?.trim() || !email?.trim()) {
+    if (!parsed.success) {
+      const firstError = parsed.error.issues[0];
       return NextResponse.json(
         {
           success: false,
-          message: "נא למלא את כל השדות הנדרשים",
-          error: "missing_fields",
+          message: firstError?.message ?? "נא למלא את כל השדות הנדרשים",
+          error: "validation_failed",
         },
         { status: 400 }
       );
     }
 
-    // 5. Validate terms acceptance
-    if (!termsAccepted) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "יש לאשר את תנאי השימוש",
-          error: "terms_not_accepted",
-        },
-        { status: 400 }
-      );
-    }
+    const { name, phone, email, message } = parsed.data;
+    const body = parsed.data;
 
-    // 6. Sanitize inputs
+    // 4. Sanitize after validation
     const sanitizedName = sanitizeInput(name);
     const sanitizedPhone = sanitizeInput(phone);
     const sanitizedEmail = sanitizeInput(email);
     const sanitizedMessage = message ? sanitizeInput(message) : "";
 
-    // 7. XSS detection
+    // 5. XSS detection on sanitized values
     if (
       detectXSS(sanitizedName) ||
       detectXSS(sanitizedPhone) ||
@@ -169,30 +141,6 @@ export async function POST(request: NextRequest): Promise<NextResponse<ContactRe
           success: false,
           message: "Invalid input detected",
           error: "invalid_input",
-        },
-        { status: 400 }
-      );
-    }
-
-    // 8. Validate email format
-    if (!isValidEmail(sanitizedEmail)) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "כתובת אימייל לא תקינה",
-          error: "invalid_email",
-        },
-        { status: 400 }
-      );
-    }
-
-    // 9. Validate phone format (optional but recommended)
-    if (!isValidIsraeliPhone(sanitizedPhone)) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "מספר טלפון לא תקין",
-          error: "invalid_phone",
         },
         { status: 400 }
       );
@@ -294,15 +242,23 @@ export async function POST(request: NextRequest): Promise<NextResponse<ContactRe
 }
 
 /**
- * OPTIONS handler for CORS preflight
+ * OPTIONS handler for CORS preflight.
+ * Echoes Origin only if it's in the allowlist — never wildcard.
  */
-export async function OPTIONS() {
+export async function OPTIONS(request: NextRequest) {
+  const { getAllowedOrigins } = await import("@/lib/csrf");
+  const origin = request.headers.get("origin");
+  const allowed = getAllowedOrigins();
+  const allowOrigin = origin && allowed.includes(origin) ? origin : "";
+
   return new NextResponse(null, {
-    status: 200,
+    status: 204,
     headers: {
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": allowOrigin,
       "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Headers": "Content-Type, X-CSRF-Token",
+      "Access-Control-Allow-Credentials": "true",
+      Vary: "Origin",
     },
   });
 }

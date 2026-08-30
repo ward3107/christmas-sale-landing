@@ -10,6 +10,7 @@
 import { useEffect, useRef, useState } from "react";
 import { siteConfig } from "@/config/site-config";
 import { Icon } from "@/components/ui/Icon";
+import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 
 export function About() {
   const { about, contact } = siteConfig;
@@ -103,7 +104,7 @@ export function About() {
                 >
                   {/* Stat Value */}
                   <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2">
-                    {stat.value}
+                    <AnimatedCounter value={stat.value} />
                   </div>
 
                   {/* Stat Label */}

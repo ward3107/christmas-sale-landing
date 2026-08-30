@@ -27,6 +27,15 @@
     overflow-x: hidden;
     max-width: 100vw;
     position: relative;
+    /* Hebrew letters are denser than Latin — needs more leading. */
+    line-height: 1.7;
+    letter-spacing: -0.005em;
+  }
+
+  /* Hebrew-tuned line-heights and tracking for headings */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.25;
+    letter-spacing: -0.015em;
   }
 
   /* Better focus styles */
@@ -37,6 +46,18 @@
   /* Selection colors */
   ::selection {
     @apply bg-blue-600 text-white;
+  }
+
+  /* Respect user motion preferences globally. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
   /* Scrollbar styling (Webkit browsers) */
@@ -255,6 +276,13 @@
 
 .animate-slide-up {
   animation: slideUp 0.4s ease-out forwards;
+}
+
+/* Reserve space so the bottom sticky CTA doesn't cover content on mobile. */
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 4.5rem;
+  }
 }
 
 /* Print styles */
