@@ -4,8 +4,8 @@
 (function () {
   "use strict";
 
-  var POSTER = "assets/hero-poster.jpg";
-  var VIDEO_SRC = "assets/hero.mp4";
+  var POSTER = "/cinematic/assets/hero-poster.jpg";
+  var VIDEO_SRC = "/cinematic/assets/hero.mp4";
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var smallOrTouch =
@@ -24,7 +24,8 @@
   var loaderPct = document.getElementById("loaderPct");
   var scrollHint = document.getElementById("scrollHint");
 
-  // Poster always available as the fallback layer (inline so the URL is document-relative).
+  // Poster always available as the fallback layer (absolute path so it resolves
+  // whether the page is served at / or at /cinematic/).
   if (still) still.style.backgroundImage = "url('" + POSTER + "')";
 
   function hideLoader() {
@@ -110,7 +111,7 @@
     // Pick a source this browser can actually decode (some Chromium builds lack H.264).
     var canMp4 = !!video.canPlayType &&
       video.canPlayType('video/mp4; codecs="avc1.42E01E"') !== "";
-    var srcUrl = canMp4 ? VIDEO_SRC : "assets/hero.webm";
+    var srcUrl = canMp4 ? VIDEO_SRC : "/cinematic/assets/hero.webm";
 
     // Stream the video behind the loading ring so the page never blocks.
     var xhr = new XMLHttpRequest();
