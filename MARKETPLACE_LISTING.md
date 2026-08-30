@@ -41,7 +41,7 @@ Next.js (App Router) · TypeScript · Tailwind CSS · Firebase Firestore · Emai
 - Node.js 18+
 
 ### Live demo
-👉 `https://<your-permanent-demo-url>`  *(see DEPLOY note below)*
+👉 https://lawofice.netlify.app/
 
 ### Tags / keywords
 `hebrew` `rtl` `law firm` `landing page` `nextjs` `lawyer` `legal` `israel` `lead generation` `professional services` `tailwind` `firebase`
