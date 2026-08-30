@@ -1,0 +1,15 @@
+# Netlify configuration.
+#
+# Build settings are managed in the Netlify UI (build command, publish dir and
+# the Next.js Runtime plugin); this file only adds a redirect and intentionally
+# omits [build]/[[plugins]] so those UI settings are preserved.
+
+# Serve the cinematic landing page (public/cinematic/index.html) at the site
+# root. `force = true` makes this rewrite win over the Next.js handler for "/",
+# and status 200 keeps the address bar on "/" (a rewrite, not a redirect).
+# The page's own assets live under /cinematic/assets/ and are unaffected.
+[[redirects]]
+  from = "/"
+  to = "/cinematic/index.html"
+  status = 200
+  force = true

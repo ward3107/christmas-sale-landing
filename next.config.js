@@ -3,15 +3,6 @@ const nextConfig = {
   // Enable React Strict Mode for better development experience
   reactStrictMode: true,
 
-  // Serve the cinematic static landing page (public/cinematic/) at the site root.
-  // beforeFiles runs before the filesystem/route check, so it overrides app/page.tsx
-  // while keeping /cinematic/index.html reachable directly.
-  async rewrites() {
-    return {
-      beforeFiles: [{ source: "/", destination: "/cinematic/index.html" }],
-    };
-  },
-
   // Image optimization settings
   images: {
     remotePatterns: [
