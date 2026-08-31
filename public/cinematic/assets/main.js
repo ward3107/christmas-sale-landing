@@ -42,7 +42,11 @@
 
   /* ---------------- Mobile / touch: autoplay the hero video in a loop ------
      Scroll-scrubbing is unreliable on phones, so instead of a still-only hero
-     the video plays as a muted, looping, inline background over the poster. */
+     the video plays as a muted, looping, inline background over the poster.
+     Autoplay on Android/iOS is finicky (Data Saver, autoplay policy, load
+     timing), and a single rejected play() does NOT mean it can't play — so we
+     retry when the browser has enough data and on the first user gesture (a
+     tap/scroll lifts the autoplay block) instead of giving up to the still. */
   function goStaticVideo() {
     if (hero) hero.classList.add("is-static", "is-playing");
     caps.forEach(function (c) { c.classList.add("is-active"); });
@@ -50,17 +54,41 @@
 
     var canMp4 = !!video.canPlayType &&
       video.canPlayType('video/mp4; codecs="avc1.42E01E"') !== "";
-    video.src = canMp4 ? VIDEO_SRC : "/cinematic/assets/hero.webm";
-    video.loop = true;
     video.muted = true;                 // required for inline autoplay on iOS/Android
+    video.defaultMuted = true;
+    video.loop = true;
+    video.setAttribute("muted", "");
     video.setAttribute("playsinline", "");
-    video.addEventListener("loadeddata", function () { video.classList.add("is-ready"); });
-    // If the video can't load or autoplay is blocked, drop back to the poster still.
-    video.addEventListener("error", function () { if (hero) hero.classList.remove("is-playing"); });
-    var pr = video.play();
-    if (pr && pr.catch) {
-      pr.catch(function () { if (hero) hero.classList.remove("is-playing"); });
+    video.setAttribute("webkit-playsinline", "");
+    video.setAttribute("autoplay", "");
+    video.src = canMp4 ? VIDEO_SRC : "/cinematic/assets/hero.webm";
+
+    function reveal() { video.classList.add("is-ready"); }
+    video.addEventListener("loadeddata", reveal);
+    video.addEventListener("canplay", reveal);
+    video.addEventListener("playing", reveal);
+
+    var GESTURES = ["touchstart", "pointerdown", "click", "scroll", "keydown"];
+    function tryPlay() {
+      var pr = video.play();
+      if (pr && pr.catch) pr.catch(function () {}); // blocked → wait for canplay / a gesture
     }
+    function stopGestureRetry() {
+      GESTURES.forEach(function (ev) { window.removeEventListener(ev, tryPlay); });
+    }
+    // Once it is genuinely playing, stop listening for gestures.
+    video.addEventListener("playing", stopGestureRetry);
+    // Retry when there is enough data, and on the first user interaction.
+    video.addEventListener("canplay", tryPlay);
+    GESTURES.forEach(function (ev) { window.addEventListener(ev, tryPlay, { passive: true }); });
+
+    // A real load/decode failure (not an autoplay block) → fall back to the poster.
+    video.addEventListener("error", function () {
+      stopGestureRetry();
+      if (hero) hero.classList.remove("is-playing");
+    });
+
+    tryPlay();          // attempt immediate autoplay where the browser allows it
     hideLoader();
   }
 
