@@ -334,8 +334,46 @@ p{margin:0}
    stays behind as the placeholder and fades out as the video becomes ready). */
 .hero.is-static.is-playing .hero__video{display:block}
 
+/* ---------- Scroll-driven showcase: images cross-fade with depth -------- */
+.showcase{position:relative;background:var(--ink)}
+.showcase__track{height:300vh}
+.showcase__sticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--ink)}
+.showcase__layer{position:absolute;inset:0;background-size:cover;background-position:center;
+  opacity:0;transform:scale(1.06);will-change:opacity,transform}
+.showcase__layer[data-shot="0"]{opacity:1;transform:scale(1)} /* fallback: first shot */
+.showcase__scrim{position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:
+    linear-gradient(90deg,rgba(11,18,32,.8) 0%,rgba(11,18,32,.25) 46%,rgba(11,18,32,.2) 100%),
+    linear-gradient(0deg,rgba(11,18,32,.85) 0%,rgba(11,18,32,0) 55%)}
+.showcase__caps{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;
+  justify-content:center;padding:0 clamp(24px,7vw,110px)}
+.showcase__cap{position:absolute;left:clamp(24px,7vw,110px);right:clamp(24px,7vw,110px);
+  max-width:660px;opacity:0;transform:translateY(20px);color:var(--marble);will-change:opacity,transform}
+.showcase__cap[data-shot="0"]{opacity:1;transform:none} /* fallback */
+.showcase__kicker{font-family:var(--font-mono);font-size:13px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--gold-bright);margin-bottom:14px}
+.showcase__cap h2{font-family:var(--font-display);font-weight:700;
+  font-size:clamp(30px,5.4vw,60px);line-height:1.1;letter-spacing:-.02em;color:var(--marble);
+  text-shadow:0 4px 40px rgba(0,0,0,.6)}
+.showcase__sub{margin-top:16px;font-size:clamp(15px,2.3vw,20px);color:var(--marble-dim);max-width:42ch}
+.showcase__dots{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);
+  display:flex;gap:10px;z-index:3}
+.showcase__dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.28);
+  transition:background .35s var(--ease),transform .35s var(--ease)}
+.showcase__dots span.is-on{background:var(--gold);transform:scale(1.35)}
+@media (max-width:940px){
+  .showcase__track{height:260vh}
+  .showcase__caps{padding:0 22px;align-items:center;text-align:center}
+  .showcase__cap{left:22px;right:22px;text-align:center}
+}
+
 @media (prefers-reduced-motion:reduce){
   .js [data-reveal]{opacity:1!important;transform:none!important}
   .hero__scrollhint-line{animation:none}
   .loader__ring{animation:none}
+  /* Collapse the scroll track so it isn't a long empty stretch without motion. */
+  .showcase__track{height:auto}
+  .showcase__sticky{position:relative;height:72vh;min-height:460px}
+  .showcase__layer[data-shot="0"]{opacity:1;transform:none}
+  .showcase__cap[data-shot="0"]{opacity:1;transform:none}
 }

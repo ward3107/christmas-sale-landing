@@ -240,6 +240,46 @@
     revealEls.forEach(function (el) { el.classList.add("is-visible"); });
   }
 
+  /* ---------------- Scroll-driven showcase (image transition + depth) ----
+     As the sticky section scrolls, the stacked images cross-fade and zoom
+     (scale) into one another, with the caption + dot swapping in step. */
+  var showcase = document.getElementById("showcase");
+  if (showcase && !reduceMotion) {
+    var scTrack = showcase.querySelector(".showcase__track");
+    var scLayers = showcase.querySelectorAll(".showcase__layer");
+    var scCaps = showcase.querySelectorAll(".showcase__cap");
+    var scDots = showcase.querySelectorAll(".showcase__dots span");
+    var scN = scLayers.length;
+    var scTick = false;
+    function scRender() {
+      scTick = false;
+      var vh = window.innerHeight;
+      // Absolute document top of the track (offsetTop is relative to the
+      // position:relative .showcase parent, so it can't be used here).
+      var top = scTrack.getBoundingClientRect().top + window.scrollY;
+      var range = scTrack.offsetHeight - vh;
+      var p = range > 0 ? (window.scrollY - top) / range : 0;
+      p = p < 0 ? 0 : p > 1 ? 1 : p;
+      var local = p * (scN - 1);          // 0 .. scN-1
+      var active = Math.round(local);
+      for (var i = 0; i < scN; i++) {
+        var d = Math.abs(local - i);
+        var op = d < 1 ? 1 - d : 0;        // triangular cross-fade, peaks on its shot
+        scLayers[i].style.opacity = op.toFixed(3);
+        scLayers[i].style.transform = "scale(" + (1.06 - 0.06 * op).toFixed(3) + ")";
+        if (scCaps[i]) {
+          scCaps[i].style.opacity = op.toFixed(3);
+          scCaps[i].style.transform = "translateY(" + (20 * (1 - op)).toFixed(1) + "px)";
+        }
+        if (scDots[i]) scDots[i].classList.toggle("is-on", i === active);
+      }
+    }
+    function scOnScroll() { if (!scTick) { scTick = true; requestAnimationFrame(scRender); } }
+    window.addEventListener("scroll", scOnScroll, { passive: true });
+    window.addEventListener("resize", scOnScroll, { passive: true });
+    scRender();
+  }
+
   /* ---------------- Count-up stats --------------------------------------- */
   var counters = document.querySelectorAll(".trust__num[data-count]");
   function runCount(el) {
