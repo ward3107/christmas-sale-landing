@@ -341,3 +341,121 @@
   var year = document.getElementById("year");
   if (year) year.textContent = new Date().getFullYear();
 })();
+
+/* =========================================================================
+   iOS-minimal accessibility widget + cookie banner + WhatsApp button.
+   Self-contained and injected on every page that loads this script.
+   ========================================================================= */
+(function () {
+  "use strict";
+  var WHATSAPP = "972500000000";   // TODO: replace with the firm's real WhatsApp number (digits only, incl. country code)
+  var WA_MSG = "היי, הגעתי דרך האתר ואשמח לתאם פגישת ייעוץ.";
+  var root = document.documentElement;
+  var store; try { store = window.localStorage; } catch (e) { store = null; }
+  function get(k, d) { try { var v = store && store.getItem(k); return v == null ? d : v; } catch (e) { return d; } }
+  function set(k, v) { try { store && store.setItem(k, v); } catch (e) {} }
+  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+
+  /* ---- Accessibility preferences ---- */
+  var A11Y_KEY = "a11yPrefs";
+  var prefs = { zoom: 0, contrast: false, links: false, readable: false, nomotion: false, cursor: false };
+  try { var saved = JSON.parse(get(A11Y_KEY, "null")); if (saved && typeof saved === "object") { for (var p in prefs) if (p in saved) prefs[p] = saved[p]; } } catch (e) {}
+
+  function applyPrefs() {
+    root.classList.toggle("a11y-zoom-1", prefs.zoom === 1);
+    root.classList.toggle("a11y-zoom-2", prefs.zoom === 2);
+    root.classList.toggle("a11y-contrast", !!prefs.contrast);
+    root.classList.toggle("a11y-links", !!prefs.links);
+    root.classList.toggle("a11y-readable", !!prefs.readable);
+    root.classList.toggle("a11y-nomotion", !!prefs.nomotion);
+    root.classList.toggle("a11y-cursor", !!prefs.cursor);
+  }
+  applyPrefs();
+
+  function row(key, label) {
+    return '<div class="a11y__row"><span>' + label + '</span>' +
+      '<label class="sw"><input type="checkbox" data-k="' + key + '"><i></i></label></div>';
+  }
+
+  var ICON_A11Y = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="4.2" r="2.1" fill="currentColor"/><path d="M4.5 8.2c2.4.9 4.9 1.3 7.5 1.3s5.1-.4 7.5-1.3M12 9.6v5.2m0 0l-2.7 5.4M12 14.8l2.7 5.4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var ICON_WA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.52 15.24L2 22l4.9-1.46A10 10 0 1 0 12 2Zm5.27 14.13c-.22.62-1.28 1.19-1.77 1.22-.48.05-.96.24-3.23-.67-2.73-1.08-4.45-3.8-4.58-3.98-.13-.18-1.1-1.46-1.1-2.79 0-1.33.7-1.98.95-2.25.24-.27.53-.34.7-.34l.5.01c.16 0 .38-.06.59.45.22.53.73 1.83.8 1.96.06.13.1.29.02.46-.08.18-.12.29-.24.44l-.36.42c-.12.12-.24.25-.1.49.13.24.6 1 1.29 1.62.88.79 1.63 1.03 1.86 1.15.24.12.38.1.52-.06.14-.16.6-.7.76-.94.16-.24.32-.2.53-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.11.06.62-.16 1.24Z"/></svg>';
+
+  /* ---- WhatsApp button ---- */
+  var wa = el("a", "fab fab--wa", ICON_WA);
+  wa.href = "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(WA_MSG);
+  wa.target = "_blank"; wa.rel = "noopener";
+  wa.setAttribute("aria-label", "צ׳אט בוואטסאפ");
+  document.body.appendChild(wa);
+
+  /* ---- Accessibility button + panel ---- */
+  var btn = el("button", "fab fab--a11y", ICON_A11Y);
+  btn.type = "button";
+  btn.setAttribute("aria-label", "אפשרויות נגישות");
+  btn.setAttribute("aria-expanded", "false");
+  document.body.appendChild(btn);
+
+  var panel = el("div", "a11y",
+    '<div class="a11y__head"><span class="a11y__title">נגישות</span>' +
+    '<button class="a11y__x" type="button" aria-label="סגירה">✕</button></div>' +
+    '<div class="a11y__row"><span>גודל טקסט</span>' +
+      '<span class="a11y__seg" data-seg="zoom">' +
+        '<button type="button" data-v="0">A</button>' +
+        '<button type="button" data-v="1">A+</button>' +
+        '<button type="button" data-v="2">A++</button></span></div>' +
+    row("contrast", "ניגודיות גבוהה") +
+    row("links", "הדגשת קישורים") +
+    row("readable", "גופן קריא") +
+    row("nomotion", "עצירת אנימציות") +
+    row("cursor", "סמן גדול") +
+    '<div class="a11y__foot"><button class="a11y__reset" type="button">איפוס</button>' +
+    '<a class="a11y__link" href="/cinematic/accessibility.html">הצהרת נגישות מלאה</a></div>');
+  panel.setAttribute("role", "dialog");
+  panel.setAttribute("aria-label", "אפשרויות נגישות");
+  document.body.appendChild(panel);
+
+  function syncUI() {
+    var segs = panel.querySelectorAll('[data-seg="zoom"] button');
+    for (var i = 0; i < segs.length; i++) segs[i].classList.toggle("is-on", Number(segs[i].getAttribute("data-v")) === prefs.zoom);
+    var checks = panel.querySelectorAll("input[data-k]");
+    for (var j = 0; j < checks.length; j++) checks[j].checked = !!prefs[checks[j].getAttribute("data-k")];
+  }
+  function savePrefs() { set(A11Y_KEY, JSON.stringify(prefs)); applyPrefs(); syncUI(); }
+  syncUI();
+
+  function openPanel(o) { panel.classList.toggle("is-open", o); btn.setAttribute("aria-expanded", o ? "true" : "false"); }
+  btn.addEventListener("click", function () { openPanel(!panel.classList.contains("is-open")); });
+  panel.querySelector(".a11y__x").addEventListener("click", function () { openPanel(false); });
+  document.addEventListener("click", function (e) {
+    if (panel.classList.contains("is-open") && !panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)) openPanel(false);
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") openPanel(false); });
+  panel.addEventListener("click", function (e) {
+    var seg = e.target.closest && e.target.closest('[data-seg="zoom"] button');
+    if (seg) { prefs.zoom = Number(seg.getAttribute("data-v")); savePrefs(); }
+  });
+  panel.addEventListener("change", function (e) {
+    var k = e.target.getAttribute && e.target.getAttribute("data-k");
+    if (k) { prefs[k] = !!e.target.checked; savePrefs(); }
+  });
+  panel.querySelector(".a11y__reset").addEventListener("click", function () {
+    prefs = { zoom: 0, contrast: false, links: false, readable: false, nomotion: false, cursor: false };
+    savePrefs();
+  });
+
+  /* ---- Cookie banner ---- */
+  if (get("cookieConsent", "") === "") {
+    document.body.classList.add("has-cookie");
+    var ck = el("div", "cookie",
+      '<p class="cookie__txt">אנחנו משתמשים בעוגיות כדי לשפר את חוויית הגלישה ולנתח שימוש. ' +
+      '<a href="/cinematic/privacy.html">מדיניות הפרטיות</a>.</p>' +
+      '<div class="cookie__btns">' +
+      '<button class="cookie__btn cookie__btn--no" type="button">דחייה</button>' +
+      '<button class="cookie__btn cookie__btn--ok" type="button">אישור</button></div>');
+    ck.setAttribute("role", "dialog");
+    ck.setAttribute("aria-label", "הודעת עוגיות");
+    document.body.appendChild(ck);
+    var decide = function (v) { set("cookieConsent", v); if (ck.parentNode) ck.parentNode.removeChild(ck); document.body.classList.remove("has-cookie"); };
+    ck.querySelector(".cookie__btn--ok").addEventListener("click", function () { decide("accepted"); });
+    ck.querySelector(".cookie__btn--no").addEventListener("click", function () { decide("rejected"); });
+  }
+})();
