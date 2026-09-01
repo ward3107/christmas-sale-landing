@@ -270,6 +270,7 @@
         if (scCaps[i]) {
           scCaps[i].style.opacity = op.toFixed(3);
           scCaps[i].style.transform = "translateY(" + (20 * (1 - op)).toFixed(1) + "px)";
+          scCaps[i].style.pointerEvents = op > 0.6 ? "auto" : "none"; // only the visible slide is clickable
         }
         if (scDots[i]) scDots[i].classList.toggle("is-on", i === active);
       }

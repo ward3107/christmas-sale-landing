@@ -20,12 +20,6 @@
 </head>
 <body>
 
-  <!-- Loading ring (shown while the hero video streams) -->
-  <div id="loader" class="loader" aria-hidden="true">
-    <div class="loader__ring"></div>
-    <div class="loader__label">טוען חוויה<span class="loader__pct" id="loaderPct"></span></div>
-  </div>
-
   <!-- NAV -->
   <header class="nav" id="nav">
     <div class="nav__inner">
@@ -48,41 +42,41 @@
 
   <span id="top"></span>
 
-  <!-- HERO: scroll-scrub cinematic stage -->
-  <section class="hero" id="hero" aria-label="פתיחה">
-    <div class="hero__stage">
-      <!-- Static fallback / poster layer (mobile, reduced motion, or video off) -->
-      <div class="hero__still" id="heroStill"></div>
-      <video class="hero__video" id="heroVideo" muted playsinline preload="auto" aria-hidden="true"></video>
-      <div class="hero__scrim" aria-hidden="true"></div>
-      <div class="hero__grain" aria-hidden="true"></div>
-
-      <!-- Caption bands (revealed by scroll on desktop; stacked on mobile) -->
-      <div class="hero__captions" id="heroCaptions">
-        <div class="cap" data-band="0">
-          <p class="cap__kicker">Cohen &amp; Co. · משפט מסחרי</p>
-          <h1 class="cap__title">כשעסק צריך יותר מעורך דין,<br />הוא צריך שותף.</h1>
+  <!-- OPENING: scroll-driven image transition with depth (replaces the video hero) -->
+  <section class="showcase" id="showcase" aria-label="פתיחה">
+    <div class="showcase__track">
+      <div class="showcase__sticky">
+        <div class="showcase__layer" data-shot="0" style="background-image:url('/cinematic/assets/hero-poster.jpg')"></div>
+        <div class="showcase__layer" data-shot="1" style="background-image:url('/cinematic/assets/about.jpg')"></div>
+        <div class="showcase__layer" data-shot="2" style="background-image:url('/cinematic/assets/hero-end.jpg')"></div>
+        <div class="showcase__scrim" aria-hidden="true"></div>
+        <div class="showcase__caps">
+          <div class="showcase__cap" data-shot="0">
+            <p class="showcase__kicker">Cohen &amp; Co. · משפט מסחרי</p>
+            <h1>כשעסק צריך יותר מעורך דין,<br />הוא צריך שותף.</h1>
+            <p class="showcase__sub">ליווי משפטי לעסקים וסטארטאפים — מחיר ברור מראש, זמינות אמיתית, ושותף בכיר לצידכם.</p>
+            <a href="#contact" class="btn btn--gold btn--lg showcase__cta">לפגישת ייעוץ חינם</a>
+          </div>
+          <div class="showcase__cap" data-shot="1">
+            <p class="showcase__kicker">איך אנחנו עובדים</p>
+            <h2>כאן נולדות ההחלטות.</h2>
+            <p class="showcase__sub">ראייה עסקית, ידע משפטי עמוק, ומטרה אחת — שתצליחו.</p>
+          </div>
+          <div class="showcase__cap" data-shot="2">
+            <p class="showcase__kicker">שותפים לצמיחה שלכם</p>
+            <h2>מגובים משפטית, חופשיים לגדול.</h2>
+            <a href="#contact" class="btn btn--gold showcase__cta">קבעו פגישת ייעוץ חינם</a>
+          </div>
         </div>
-        <div class="cap" data-band="1">
-          <p class="cap__big">15 שנה. 500 עסקים.<br /><span class="gold">אפס הפתעות.</span></p>
+        <div class="showcase__scrollhint" aria-hidden="true">
+          <span>גללו</span>
+          <span class="hero__scrollhint-line"></span>
         </div>
-        <div class="cap" data-band="2">
-          <p class="cap__big">אנחנו מונעים את הבעיה<br />לפני שהיא מגיעה.</p>
+        <div class="showcase__dots" aria-hidden="true">
+          <span data-shot="0" class="is-on"></span><span data-shot="1"></span><span data-shot="2"></span>
         </div>
-        <div class="cap cap--settle" data-band="3">
-          <h2 class="cap__settle-title">המשרד שלוקח אתכם קדימה.</h2>
-          <a href="#contact" class="btn btn--gold btn--lg">לפגישת ייעוץ חינם</a>
-          <p class="cap__note">שיחת היכרות ראשונה, ללא עלות וללא התחייבות.</p>
-        </div>
-      </div>
-
-      <div class="hero__scrollhint" id="scrollHint" aria-hidden="true">
-        <span>גללו</span>
-        <span class="hero__scrollhint-line"></span>
       </div>
     </div>
-    <!-- scroll spacer gives the scrub its length (desktop only) -->
-    <div class="hero__spacer" id="heroSpacer" aria-hidden="true"></div>
   </section>
 
   <main>
@@ -169,38 +163,6 @@
           <p>יותר מעשור אנחנו מלווים חברות וסטארטאפים בדיני חברות, חוזים, מיזוגים ורכישות וקניין רוחני. אנחנו משלבים ידע משפטי עמוק עם ראייה עסקית, כי החלטה משפטית טובה היא קודם כל החלטה עסקית טובה.</p>
           <p>הדרך שלנו להגן עליכם היא למנוע את הבעיה מראש, לא לרוץ אחריה כשהיא כבר כאן.</p>
           <a href="#contact" class="btn btn--outline">בואו נדבר</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- SHOWCASE: scroll-driven image transition with depth -->
-    <section class="showcase" id="showcase" aria-label="גלריה נגללת">
-      <div class="showcase__track">
-        <div class="showcase__sticky">
-          <div class="showcase__layer" data-shot="0" style="background-image:url('/cinematic/assets/hero-poster.jpg')"></div>
-          <div class="showcase__layer" data-shot="1" style="background-image:url('/cinematic/assets/about.jpg')"></div>
-          <div class="showcase__layer" data-shot="2" style="background-image:url('/cinematic/assets/hero-end.jpg')"></div>
-          <div class="showcase__scrim" aria-hidden="true"></div>
-          <div class="showcase__caps">
-            <div class="showcase__cap" data-shot="0">
-              <p class="showcase__kicker">מי אנחנו</p>
-              <h2>נוכחות שקטה, יד בטוחה.</h2>
-              <p class="showcase__sub">מהרגע הראשון ולאורך כל הדרך — אתם לא לבד.</p>
-            </div>
-            <div class="showcase__cap" data-shot="1">
-              <p class="showcase__kicker">איך אנחנו עובדים</p>
-              <h2>כאן נולדות ההחלטות.</h2>
-              <p class="showcase__sub">ראייה עסקית, ידע משפטי עמוק, ומטרה אחת — שתצליחו.</p>
-            </div>
-            <div class="showcase__cap" data-shot="2">
-              <p class="showcase__kicker">לאן ממשיכים</p>
-              <h2>שותפים לצמיחה שלכם.</h2>
-              <p class="showcase__sub">מגובים משפטית, חופשיים לגדול.</p>
-            </div>
-          </div>
-          <div class="showcase__dots" aria-hidden="true">
-            <span data-shot="0" class="is-on"></span><span data-shot="1"></span><span data-shot="2"></span>
-          </div>
         </div>
       </div>
     </section>
