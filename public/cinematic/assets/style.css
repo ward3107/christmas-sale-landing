@@ -280,6 +280,28 @@ p{margin:0}
 .form__ok{margin-top:16px;color:var(--gold-ink);font-size:15px;text-align:center;
   border:1px solid rgba(154,115,34,.4);padding:12px;border-radius:2px;background:rgba(154,115,34,.07)}
 
+/* ---------- Contact via WhatsApp (replaces the form) ---------- */
+.cta__reach{background:var(--card);border:1px solid var(--line);border-radius:20px;
+  padding:clamp(24px,3.4vw,36px);box-shadow:var(--shadow);align-self:start}
+.cta__reach-eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--gold-ink);margin-bottom:10px}
+.cta__reach-title{font-size:clamp(22px,3vw,30px);color:var(--ink);margin-bottom:10px}
+.cta__reach-sub{color:var(--text-dim);margin-bottom:22px}
+.cta__reach-alt{margin-top:16px;text-align:center;color:var(--text-dim);font-size:14.5px}
+.cta__reach-alt a{color:var(--gold-ink);text-decoration:underline}
+.btn--wa{background:#25D366;color:#fff}
+.btn--wa:hover{background:#20bd5a;color:#fff}
+.btn--wa.btn--block{display:flex;align-items:center;justify-content:center;gap:8px}
+.btn--wa svg{width:20px;height:20px}
+
+/* ---------- Service cards: hover / focus reveals detail points ---------- */
+.svc__more{list-style:none;margin:0;padding:0;max-height:0;opacity:0;overflow:hidden;
+  transition:max-height .45s var(--ease),opacity .3s var(--ease),margin-top .45s var(--ease)}
+.svc__more li{position:relative;padding-inline-start:20px;font-size:14.5px;color:var(--text-dim);margin-top:9px}
+.svc__more li::before{content:"–";position:absolute;inset-inline-start:0;color:var(--gold-ink);font-weight:700}
+.svc:hover .svc__more,.svc:focus-within .svc__more,.svc:focus .svc__more{max-height:240px;opacity:1;margin-top:16px}
+.svc:focus-visible{outline:none;box-shadow:inset 0 0 0 2px rgba(154,115,34,.5)}
+
 /* ---------- Footer (dark, grounds the page) ---------- */
 .footer{background:var(--ink-2);color:var(--marble);border-top:1px solid var(--hairline);padding:60px 0 34px}
 .footer__grid{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;

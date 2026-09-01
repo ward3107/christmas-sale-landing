@@ -230,8 +230,16 @@
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (en.isIntersecting) {
-          en.target.classList.add("is-visible");
-          io.unobserve(en.target);
+          var t = en.target, g = t.parentElement;
+          // Stagger the "why" feature cards so they fade in one-by-one.
+          if (g && g.classList.contains("why__grid")) {
+            var idx = Array.prototype.indexOf.call(g.children, t);
+            var d = (idx < 0 ? 0 : idx) * 120;
+            t.style.transitionDelay = d + "ms";
+            setTimeout((function (node) { return function () { node.style.transitionDelay = ""; }; })(t), d + 1000);
+          }
+          t.classList.add("is-visible");
+          io.unobserve(t);
         }
       });
     }, { threshold: 0.14, rootMargin: "0px 0px -8% 0px" });
@@ -386,6 +394,12 @@
   wa.target = "_blank"; wa.rel = "noopener";
   wa.setAttribute("aria-label", "צ׳אט בוואטסאפ");
   document.body.appendChild(wa);
+
+  // Wire any in-page WhatsApp CTA links (.js-wa) to the same number + message.
+  var waLinks = document.querySelectorAll(".js-wa");
+  for (var wl = 0; wl < waLinks.length; wl++) {
+    waLinks[wl].href = wa.href; waLinks[wl].target = "_blank"; waLinks[wl].rel = "noopener";
+  }
 
   /* ---- Accessibility button + panel ---- */
   var btn = el("button", "fab fab--a11y", ICON_A11Y);
