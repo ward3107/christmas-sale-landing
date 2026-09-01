@@ -280,6 +280,28 @@ p{margin:0}
 .form__ok{margin-top:16px;color:var(--gold-ink);font-size:15px;text-align:center;
   border:1px solid rgba(154,115,34,.4);padding:12px;border-radius:2px;background:rgba(154,115,34,.07)}
 
+/* ---------- Contact via WhatsApp (replaces the form) ---------- */
+.cta__reach{background:var(--card);border:1px solid var(--line);border-radius:20px;
+  padding:clamp(24px,3.4vw,36px);box-shadow:var(--shadow);align-self:start}
+.cta__reach-eyebrow{font-family:var(--font-mono);font-size:12px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--gold-ink);margin-bottom:10px}
+.cta__reach-title{font-size:clamp(22px,3vw,30px);color:var(--ink);margin-bottom:10px}
+.cta__reach-sub{color:var(--text-dim);margin-bottom:22px}
+.cta__reach-alt{margin-top:16px;text-align:center;color:var(--text-dim);font-size:14.5px}
+.cta__reach-alt a{color:var(--gold-ink);text-decoration:underline}
+.btn--wa{background:#25D366;color:#fff}
+.btn--wa:hover{background:#20bd5a;color:#fff}
+.btn--wa.btn--block{display:flex;align-items:center;justify-content:center;gap:8px}
+.btn--wa svg{width:20px;height:20px}
+
+/* ---------- Service cards: hover / focus reveals detail points ---------- */
+.svc__more{list-style:none;margin:0;padding:0;max-height:0;opacity:0;overflow:hidden;
+  transition:max-height .45s var(--ease),opacity .3s var(--ease),margin-top .45s var(--ease)}
+.svc__more li{position:relative;padding-inline-start:20px;font-size:14.5px;color:var(--text-dim);margin-top:9px}
+.svc__more li::before{content:"–";position:absolute;inset-inline-start:0;color:var(--gold-ink);font-weight:700}
+.svc:hover .svc__more,.svc:focus-within .svc__more,.svc:focus .svc__more{max-height:240px;opacity:1;margin-top:16px}
+.svc:focus-visible{outline:none;box-shadow:inset 0 0 0 2px rgba(154,115,34,.5)}
+
 /* ---------- Footer (dark, grounds the page) ---------- */
 .footer{background:var(--ink-2);color:var(--marble);border-top:1px solid var(--hairline);padding:60px 0 34px}
 .footer__grid{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;
@@ -334,8 +356,148 @@ p{margin:0}
    stays behind as the placeholder and fades out as the video becomes ready). */
 .hero.is-static.is-playing .hero__video{display:block}
 
+/* ---------- Scroll-driven showcase: images cross-fade with depth -------- */
+.showcase{position:relative;background:var(--ink)}
+.showcase__track{height:300vh}
+.showcase__sticky{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--ink)}
+.showcase__layer{position:absolute;inset:0;background-size:cover;background-position:center;
+  opacity:0;transform:scale(1.06);will-change:opacity,transform}
+.showcase__layer[data-shot="0"]{opacity:1;transform:scale(1)} /* fallback: first shot */
+.showcase__scrim{position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:
+    linear-gradient(90deg,rgba(11,18,32,.8) 0%,rgba(11,18,32,.25) 46%,rgba(11,18,32,.2) 100%),
+    linear-gradient(0deg,rgba(11,18,32,.85) 0%,rgba(11,18,32,0) 55%)}
+.showcase__caps{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;
+  justify-content:center;padding:0 clamp(24px,7vw,110px)}
+.showcase__cap{position:absolute;left:clamp(24px,7vw,110px);right:clamp(24px,7vw,110px);
+  max-width:660px;opacity:0;transform:translateY(20px);color:var(--marble);
+  pointer-events:none;will-change:opacity,transform}
+.showcase__cap[data-shot="0"]{opacity:1;transform:none;pointer-events:auto} /* fallback */
+.showcase__kicker{font-family:var(--font-mono);font-size:13px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--gold-bright);margin-bottom:14px}
+.showcase__cap h1,.showcase__cap h2{font-family:var(--font-display);font-weight:700;
+  font-size:clamp(32px,5.6vw,64px);line-height:1.1;letter-spacing:-.02em;color:var(--marble);
+  text-shadow:0 4px 40px rgba(0,0,0,.6)}
+.showcase__sub{margin-top:16px;font-size:clamp(15px,2.3vw,20px);color:var(--marble-dim);max-width:42ch}
+.showcase__cta{margin-top:26px}
+.showcase__scrollhint{position:absolute;bottom:74px;left:50%;transform:translateX(-50%);z-index:3;
+  display:flex;flex-direction:column;align-items:center;gap:10px;font-family:var(--font-mono);
+  font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--marble-dim)}
+.showcase__dots{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);
+  display:flex;gap:10px;z-index:3}
+.showcase__dots span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.28);
+  transition:background .35s var(--ease),transform .35s var(--ease)}
+.showcase__dots span.is-on{background:var(--gold);transform:scale(1.35)}
+@media (max-width:940px){
+  .showcase__track{height:260vh}
+  .showcase__caps{padding:0 22px;align-items:center;text-align:center}
+  .showcase__cap{left:22px;right:22px;text-align:center}
+}
+
 @media (prefers-reduced-motion:reduce){
   .js [data-reveal]{opacity:1!important;transform:none!important}
   .hero__scrollhint-line{animation:none}
   .loader__ring{animation:none}
+  /* Collapse the scroll track so it isn't a long empty stretch without motion. */
+  .showcase__track{height:auto}
+  .showcase__sticky{position:relative;height:72vh;min-height:460px}
+  .showcase__layer[data-shot="0"]{opacity:1;transform:none}
+  .showcase__cap[data-shot="0"]{opacity:1;transform:none}
 }
+
+/* =========================================================================
+   iOS-minimal: floating buttons, accessibility panel, cookie banner, legal.
+   ========================================================================= */
+/* ---- Floating action buttons (accessibility + WhatsApp) ---- */
+.fab{position:fixed;bottom:20px;z-index:1000;width:56px;height:56px;border-radius:50%;border:none;
+  cursor:pointer;display:grid;place-items:center;color:#fff;
+  box-shadow:0 14px 34px -10px rgba(26,39,64,.55);
+  transition:transform .2s var(--ease),box-shadow .2s var(--ease)}
+.fab:hover{transform:translateY(-2px) scale(1.04)}
+.fab:active{transform:scale(.95)}
+.fab svg{width:28px;height:28px;display:block}
+.fab--a11y{right:20px;background:var(--ink);color:var(--gold-bright)}
+.fab--wa{left:20px;background:#25D366;color:#fff}
+body.has-cookie .fab{bottom:108px}
+@media (max-width:560px){.fab{width:52px;height:52px}.fab svg{width:26px;height:26px}}
+
+/* ---- Accessibility panel (iOS frosted card) ---- */
+.a11y{position:fixed;right:20px;bottom:88px;z-index:1001;width:320px;max-width:calc(100vw - 40px);
+  background:rgba(251,248,241,.9);backdrop-filter:blur(24px) saturate(180%);
+  -webkit-backdrop-filter:blur(24px) saturate(180%);border:1px solid rgba(255,255,255,.65);
+  border-radius:24px;box-shadow:0 26px 74px -22px rgba(26,39,64,.55);padding:16px 16px 14px;
+  color:var(--text);font-family:var(--font-body);opacity:0;visibility:hidden;pointer-events:none;
+  transform:scale(.94) translateY(12px);transform-origin:bottom right;
+  transition:opacity .22s var(--ease),transform .22s var(--ease),visibility .22s}
+.a11y.is-open{opacity:1;visibility:visible;pointer-events:auto;transform:none}
+.a11y__head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.a11y__title{font-family:var(--font-display);font-size:19px;color:var(--ink)}
+.a11y__x{border:none;background:rgba(26,39,64,.06);width:30px;height:30px;border-radius:50%;
+  cursor:pointer;font-size:14px;color:var(--text-dim);line-height:1}
+.a11y__row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 4px;
+  border-top:1px solid var(--hairline-l)}
+.a11y__row span{font-size:15px}
+.a11y__seg{display:inline-flex;background:rgba(26,39,64,.06);border-radius:11px;padding:3px}
+.a11y__seg button{border:none;background:none;cursor:pointer;min-width:36px;height:28px;border-radius:8px;
+  font-size:14px;color:var(--text);font-family:var(--font-body)}
+.a11y__seg button.is-on{background:#fff;box-shadow:0 1px 3px rgba(26,39,64,.2);font-weight:700}
+.sw{position:relative;width:46px;height:28px;flex:0 0 auto;cursor:pointer}
+.sw input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.sw i{position:absolute;inset:0;background:rgba(26,39,64,.2);border-radius:999px;transition:background .2s var(--ease)}
+.sw i::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:22px;height:22px;background:#fff;
+  border-radius:50%;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:transform .2s var(--ease)}
+.sw input:checked+i{background:#34C759}
+.sw input:checked+i::after{transform:translateX(-18px)}
+.a11y__foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}
+.a11y__reset{border:none;background:rgba(26,39,64,.06);border-radius:12px;padding:9px 15px;cursor:pointer;
+  font-size:14px;color:var(--text);font-family:var(--font-body)}
+.a11y__link{font-size:13px;color:var(--gold-ink);text-decoration:underline}
+@media (max-width:560px){.a11y{right:12px;left:12px;width:auto;bottom:82px}}
+
+/* ---- Cookie banner (iOS) ---- */
+.cookie{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:1000;
+  width:min(640px,calc(100vw - 32px));background:rgba(251,248,241,.93);
+  backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
+  border:1px solid rgba(255,255,255,.65);border-radius:22px;box-shadow:0 26px 74px -22px rgba(26,39,64,.55);
+  padding:15px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  font-family:var(--font-body);color:var(--text)}
+.cookie__txt{flex:1 1 240px;font-size:14.5px;line-height:1.5}
+.cookie__txt a{color:var(--gold-ink);text-decoration:underline}
+.cookie__btns{display:flex;gap:8px;flex:0 0 auto}
+.cookie__btn{border:none;cursor:pointer;border-radius:12px;padding:10px 18px;font-size:14px;font-weight:700;
+  font-family:var(--font-body)}
+.cookie__btn--ok{background:var(--ink);color:var(--marble)}
+.cookie__btn--no{background:rgba(26,39,64,.08);color:var(--text)}
+@media (max-width:560px){.cookie{flex-direction:column;align-items:stretch;text-align:center}.cookie__btns{justify-content:center}}
+
+/* ---- Accessibility preference classes ---- */
+html.a11y-zoom-1{zoom:1.1}
+html.a11y-zoom-2{zoom:1.22}
+html.a11y-contrast body{background:#fff;color:#000}
+html.a11y-contrast .section,html.a11y-contrast .footer,html.a11y-contrast .legalnav{background:#fff}
+html.a11y-contrast .legalnav .brand__name,html.a11y-contrast .legalnav a{color:#000}
+html.a11y-contrast a{text-decoration:underline}
+html.a11y-links a{text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--gold-ink);font-weight:600}
+html.a11y-readable,html.a11y-readable *{font-family:Arial,"Assistant",system-ui,sans-serif !important;letter-spacing:.01em}
+html.a11y-readable p,html.a11y-readable li{line-height:1.9 !important}
+html.a11y-nomotion *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+html.a11y-cursor,html.a11y-cursor *{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44'%3E%3Cpath d='M6 3 L6 37 L15 28 L21 41 L27 38 L21 25 L34 25 Z' fill='white' stroke='black' stroke-width='2'/%3E%3C/svg%3E") 6 3,auto !important}
+
+/* ---- Legal / policy pages ---- */
+.legalnav{position:sticky;top:0;z-index:50;background:rgba(11,18,32,.92);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--hairline)}
+.legalnav .wrap{display:flex;align-items:center;justify-content:space-between;padding-top:16px;padding-bottom:16px}
+.legalnav .brand__name{color:var(--marble);font-family:var(--font-display);font-size:20px}
+.legalnav__home{color:var(--marble-dim);font-size:14px}
+.legal{max-width:820px;margin-inline:auto;padding:clamp(48px,8vw,80px) clamp(20px,5vw,40px) 90px}
+.legal__kicker{font-family:var(--font-mono);font-size:13px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold-ink);margin-bottom:12px}
+.legal h1{font-size:clamp(30px,6vw,50px);letter-spacing:-.02em;margin-bottom:8px}
+.legal__meta{color:var(--text-dim);font-size:14px;margin-bottom:32px}
+.legal h2{font-family:var(--font-display);font-size:clamp(21px,3.4vw,27px);color:var(--ink);margin:32px 0 10px}
+.legal p{color:var(--text);margin-bottom:14px}
+.legal ul{margin:0 0 16px;padding-inline-start:22px;color:var(--text)}
+.legal li{margin-bottom:8px}
+.legal a{color:var(--gold-ink);text-decoration:underline}
+.legal__note{margin-top:30px;padding:16px 18px;border-radius:16px;background:var(--page-2);
+  border:1px solid var(--line);color:var(--text-dim);font-size:13.5px}
