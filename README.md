@@ -1,34 +1,79 @@
-# Hebrew Law Firm Landing Page — Next.js Template
+<div align="center">
 
-A production-ready, fully responsive landing page template for a Hebrew / RTL commercial law firm, built with Next.js 15 (App Router), Tailwind CSS, and Firebase. All content is data-driven from a single config file, so you can launch a customized site in minutes without touching component code.
+# ⚖️ Hebrew Law Firm — Cinematic Landing Page Template
 
-**Live demo:** https://lawofice.netlify.app/
+**A production-ready, fully responsive RTL / Hebrew landing page for a commercial law firm.**
+Built with Next.js 15, Tailwind CSS, and Firebase — every word, color, and section driven from a single config file, so you can launch a customized site in minutes without touching component code.
 
-## Features
+<br />
 
-- **Next.js 15 App Router** — modern React server components, fast builds, SEO-friendly.
-- **RTL / Hebrew support** — root layout set to `lang="he" dir="rtl"`, Rubik font with Hebrew subset, all components styled for right-to-left layout.
-- **Data-driven content** — every piece of copy, contact detail, theme color, and section lives in a single file: `src/config/site-config.ts`.
-- **Firebase Firestore lead capture** — contact form submissions are stored in Firestore via the `useLeadForm` hook, with local emulator support for development.
-- **EmailJS notifications** — get an email each time a lead submits the form (free tier: 200 emails/month, no credit card).
-- **Accessibility widget** — floating accessibility controls (font sizing, contrast, etc.).
-- **Cookie consent** — GDPR-style cookie banner with configurable policy link.
-- **Legal pages** — ready-made Hebrew Privacy Policy, Terms of Service, and Accessibility Statement pages.
-- **SEO** — configurable metadata, title, description, and keywords driven from the config file.
-- **Security layer** — client-side CSP initialization, form rate limiting, and violation tracking.
-- **Floating social widget** — call / WhatsApp / social buttons (`public/social-widget/`).
+[![Next.js](https://img.shields.io/badge/Next.js-15-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Firebase](https://img.shields.io/badge/Firebase-Firestore-FFCA28?logo=firebase&logoColor=black)](https://firebase.google.com/)
+![RTL](https://img.shields.io/badge/RTL-Hebrew-1e293b)
+![Responsive](https://img.shields.io/badge/Design-Responsive-6c47ff)
 
-## Tech Stack
+<br />
 
-- **Framework:** Next.js 15 (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS 3 + `@tailwindcss/typography`
-- **Backend / data:** Firebase Firestore
-- **Email:** EmailJS
-- **Icons:** lucide-react
-- **Testing:** Vitest (unit) + Playwright (e2e)
+### 🔗 [**View the live demo →**](https://christmas-sale-landing.vercel.app/)
 
-## Quick Start
+</div>
+
+<br />
+
+<div align="center">
+  <img src="docs/screenshots/01-hero.png" alt="Cinematic hero section — Cohen & Co. law firm landing page" width="100%" />
+  <br /><br />
+  <em>A cinematic, scroll-driven opening with a full-bleed hero, floating WhatsApp & accessibility widgets, and a GDPR-style cookie banner.</em>
+</div>
+
+<br />
+
+## ✨ Highlights
+
+- 🎬 **Cinematic scroll experience** — a full-screen, scroll-driven showcase that cross-fades and gently zooms between scenes as the visitor scrolls.
+- 🧩 **One-file customization** — every piece of copy, contact detail, theme color, and section lives in `src/config/site-config.ts`.
+- 🌐 **Native RTL / Hebrew** — `lang="he" dir="rtl"`, Hebrew-subset fonts, and components styled right-to-left throughout.
+- ♿ **Built-in accessibility widget** — font sizing, high contrast, readable font, highlight links, stop-motion, and more (Israeli Standard 5568 / WCAG 2.0 AA oriented).
+- 💬 **WhatsApp-first contact** — a one-tap WhatsApp CTA, with an optional Firebase + EmailJS lead form also included.
+- 🔒 **Security layer** — client-side CSP, form rate limiting, and violation tracking out of the box.
+
+<br />
+
+## 📸 Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/02-why.png" alt="Why-us section with staggered reveal cards" /></td>
+    <td width="50%"><img src="docs/screenshots/03-services.png" alt="Services grid — cards reveal detailed points on hover" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>Why-us</b> — cards fade in one by one</sub></td>
+    <td align="center"><sub><b>Services</b> — hover a card to reveal its detail points</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/04-about.png" alt="About section" /></td>
+    <td width="50%"><img src="docs/screenshots/05-contact.png" alt="WhatsApp contact call-to-action section" /></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>About</b> — firm story & credibility</sub></td>
+    <td align="center"><sub><b>Contact</b> — WhatsApp-first call to action</sub></td>
+  </tr>
+</table>
+
+<div align="center">
+  <br />
+  <b>📱 Mobile</b>
+  <br /><br />
+  <img src="docs/screenshots/06-mobile-hero.png" alt="Mobile hero" width="270" />
+  &nbsp;&nbsp;
+  <img src="docs/screenshots/07-mobile-services.png" alt="Mobile services" width="270" />
+</div>
+
+<br />
+
+## 🚀 Quick Start
 
 ```bash
 npm install                          # Install dependencies
@@ -37,7 +82,23 @@ cp .env.local.example .env.local     # Create your local env file
 npm run dev                          # Start the dev server at http://localhost:3000
 ```
 
-## How to Customize
+<br />
+
+## 🧰 Tech Stack
+
+| Layer | Technology |
+| --- | --- |
+| **Framework** | Next.js 15 (App Router) |
+| **Language** | TypeScript |
+| **Styling** | Tailwind CSS 3 + `@tailwindcss/typography` |
+| **Backend / data** | Firebase Firestore |
+| **Email** | EmailJS |
+| **Icons** | lucide-react |
+| **Testing** | Vitest (unit) + Playwright (e2e) |
+
+<br />
+
+## 🎨 How to Customize
 
 Almost all customization happens in **one file**: `src/config/site-config.ts`.
 
@@ -56,7 +117,9 @@ Copy `.env.local.example` to `.env.local` and fill in:
 - `NEXT_PUBLIC_USE_FIREBASE_EMULATOR` — optional, set to `true` to use the local Firestore emulator in development.
 - `NEXT_PUBLIC_EMAILJS_SERVICE_ID`, `NEXT_PUBLIC_EMAILJS_TEMPLATE_ID`, `NEXT_PUBLIC_EMAILJS_PUBLIC_KEY` — your EmailJS credentials.
 
-## Available Scripts
+<br />
+
+## 📜 Available Scripts
 
 | Script | Description |
 | --- | --- |
@@ -76,7 +139,9 @@ Copy `.env.local.example` to `.env.local` and fill in:
 | `npm run snyk-test` | Snyk security scan (high severity threshold) |
 | `npm run snyk-monitor` | Snyk continuous monitoring |
 
-## Deployment
+<br />
+
+## ▲ Deployment
 
 The template is optimized for **Vercel**:
 
@@ -85,8 +150,12 @@ The template is optimized for **Vercel**:
 3. Add all `NEXT_PUBLIC_*` environment variables in the Vercel project settings.
 4. Deploy — Vercel auto-detects Next.js and builds it for you.
 
+> The site root (`/`) serves the cinematic landing page via a `beforeFiles` rewrite in `next.config.js`.
+
 Any Node.js host that supports Next.js 15 will also work (`npm run build` then `npm run start`).
 
-## Handoff & License
+<br />
 
-This template is sold as a customizable starter. After purchase it is yours to use and modify for your own or your client's projects. You are responsible for providing your own Firebase project and EmailJS account (see `WHATS_INCLUDED.md`). The legal pages (privacy, terms, accessibility) are provided as editable Hebrew boilerplate and should be reviewed by a qualified professional before going live.
+## 📦 Handoff & License
+
+This template is sold as a customizable starter. After purchase it is yours to use and modify for your own or your client's projects. You are responsible for providing your own Firebase project and EmailJS account (see [`WHATS_INCLUDED.md`](WHATS_INCLUDED.md)). The legal pages (privacy, terms, accessibility) are provided as editable Hebrew boilerplate and should be reviewed by a qualified professional before going live.
