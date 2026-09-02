@@ -19,6 +19,19 @@ const nextConfig = {
     optimizePackageImports: ["lucide-react"],
   },
 
+  // Serve the cinematic static page (public/cinematic/index.html) at the site
+  // root. beforeFiles rewrites run before the Next.js "/" route and before the
+  // public/ filesystem check, so "/" renders the cinematic page while the URL
+  // stays "/". A vercel.json rewrite can't do this: plain rewrites are lower
+  // priority than the framework's own "/" route, so they never fire for "/".
+  // All assets in that HTML use absolute /cinematic/... paths, so they resolve
+  // correctly even though the address bar stays at "/".
+  async rewrites() {
+    return {
+      beforeFiles: [{ source: "/", destination: "/cinematic/index.html" }],
+    };
+  },
+
   // HTTP Headers for Security
   async headers() {
     const isProd = process.env.NODE_ENV === "production";
